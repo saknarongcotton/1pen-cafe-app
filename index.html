@@ -23,7 +23,7 @@
         #admin-btn-menu:hover { background-color: #d4a5a5; color: white; }
         .back-btn { background-color: var(--secondary); color: var(--text); font-weight: bold; font-family: 'Nunito', sans-serif; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; margin-bottom: 20px; font-size: 1rem; transition: transform 0.2s; position: relative; z-index: 10; }
         .back-btn:hover { transform: translateX(-5px); background-color: var(--primary); color: white; }
-        select, input[type="number"], input[type="text"], input[type="password"], input[type="date"] { padding: 12px; border: 2px solid var(--secondary); border-radius: 15px; font-size: 1rem; font-family: 'Nunito', sans-serif; outline: none; background: white; box-sizing: border-box; width: 100%; }
+        select, input[type="number"], input[type="text"], input[type="password"], input[type="date"], input[type="time"] { padding: 12px; border: 2px solid var(--secondary); border-radius: 15px; font-size: 1rem; font-family: 'Nunito', sans-serif; outline: none; background: white; box-sizing: border-box; width: 100%; }
         select:focus, input:focus { border-color: var(--primary); }
         button.action-btn { background-color: var(--primary); color: white; font-weight: bold; border: none; padding: 12px 20px; border-radius: 15px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: transform 0.2s; font-family: 'Nunito', sans-serif; font-size: 1rem; width: 100%; box-sizing: border-box; }
         button.action-btn:hover { transform: scale(1.03); }
@@ -39,22 +39,18 @@
         .shift-off { background: var(--off-red); color: #6b2723; }
         .shift-remark { font-size: 0.6rem; font-weight: normal; border-top: 1px dashed rgba(0,0,0,0.2); padding-top: 2px; margin-top: 2px; word-wrap: break-word; line-height: 1.1; }
         .running-cat { position: absolute; bottom: 20px; font-size: 3.5rem; animation: runCat 10s linear infinite; z-index: 1; opacity: 0.4; pointer-events: none; transition: all 0.3s ease; }
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(92, 64, 51, 0.4); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(3px); }
-        .modal-content { background: white; padding: 25px; border-radius: 25px; border: 4px solid var(--primary); width: 85%; max-width: 320px; text-align: center; animation: popIn 0.3s; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(92, 64, 51, 0.4); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(3px); overflow-y: auto;}
+        .modal-content { background: white; padding: 25px; border-radius: 25px; border: 4px solid var(--primary); width: 85%; max-width: 350px; text-align: center; animation: popIn 0.3s; }
         .radio-group { display: flex; flex-direction: column; gap: 8px; margin: 15px 0; text-align: left; }
         .radio-group label { background: var(--bg); padding: 12px; border-radius: 12px; border: 2px solid transparent; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 10px; font-size: 0.95rem; }
         .radio-group label:hover { border-color: var(--primary); }
         .radio-group input[type="radio"] { transform: scale(1.3); accent-color: var(--primary); }
         ul { list-style-type: none; padding: 0; margin: 0; }
         li { background: var(--bg); margin: 10px 0; padding: 15px; border-radius: 15px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; border: 2px dashed var(--primary); gap: 10px;}
-        
         .stock-item-name { font-size: 1.6rem; font-weight: 900; color: var(--text); line-height: 1.2; word-break: break-word; }
         .stock-item-qty { font-size: 1.3rem; font-weight: 700; color: #7a5c53; display: flex; align-items: center; gap: 8px; margin-top: 5px;}
-        
-        /* NEW EDITABLE QTY INPUT */
         .qty-edit-input { width: 70px; padding: 5px; font-size: 1.3rem; font-weight: 900; color: var(--text); border: 2px dashed var(--primary); border-radius: 10px; text-align: center; background: white; transition: all 0.2s; }
         .qty-edit-input:focus { border-style: solid; border-color: var(--accent); box-shadow: 0 0 10px rgba(226, 240, 203, 0.8); }
-
         .qty-btn { background: var(--secondary); color: var(--text); border: none; border-radius: 10px; width: 45px; height: 45px; font-weight: bold; cursor: pointer; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
         .qty-btn:hover { background: var(--primary); color: white; transform: scale(1.1); }
         .delete-btn { background: #ff9aa2; color: white; border: none; border-radius: 10px; padding: 10px 15px; cursor: pointer; font-weight: bold; height: 45px; font-size: 1.2rem;}
@@ -63,11 +59,8 @@
         .checklist-item input[type="checkbox"] { transform: scale(1.8); width: auto; cursor: pointer; accent-color: var(--primary);}
         .admin-block { background: #fffafb; padding: 20px; border-radius: 15px; border: 2px dashed #d4a5a5; margin-top: 15px; margin-bottom: 20px;}
         .flex-row { display: flex; gap: 10px; margin-bottom: 15px; align-items: center; }
-
-        /* Mute Button Style */
         #musicToggle { position: absolute; top: 15px; right: 15px; background: white; border: 2px solid var(--primary); border-radius: 50%; width: 45px; height: 45px; cursor: pointer; font-size: 1.2rem; box-shadow: 0 4px 10px rgba(255, 183, 178, 0.4); display: none; align-items: center; justify-content: center; transition: all 0.2s; }
         #musicToggle:hover { transform: scale(1.1); }
-
         @keyframes floatTitle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
         @keyframes popIn { 0% { opacity: 0; transform: scale(0.9) translateY(10px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-10px); } 40%, 80% { transform: translateX(10px); } }
@@ -102,9 +95,11 @@
         
         <!-- MAIN MENU -->
         <div id="main-menu" class="screen-section">
+            <h2 id="shashaMenuGreeting" style="display: none; color: #ff6b8f; font-size: 1.4rem; font-weight: 900; margin-bottom: 20px; text-align: center;"></h2>
             <h2 style="text-align: center; color: var(--text); margin-top: 0;">What would you like to do? 🧶</h2>
+            
             <div class="grid">
-                <button class="btn-menu" onclick="showSection('calendar')"><span style="font-size: 2rem;">📅</span> Calendar & Shifts</button>
+                <button class="btn-menu" onclick="showSection('calendar')"><span style="font-size: 2rem;">📅</span> Calendar & Schedule</button>
                 <button class="btn-menu" onclick="showSection('stock')"><span style="font-size: 2rem;">📦</span> Stock & Inventory</button>
                 <button class="btn-menu" onclick="showSection('tasks')"><span style="font-size: 2rem;">✅</span> Daily Checklists</button>
                 <button class="btn-menu" onclick="showSection('cat-care')"><span style="font-size: 2rem;">🐾</span> Cat Care Log</button>
@@ -125,18 +120,16 @@
             <div class="calendar-grid" id="calendarGrid"></div>
         </div>
 
-        <!-- TOOL: ADMIN DASHBOARD -->
+        <!-- TOOL: ADMIN DASHBOARD (HIDDEN FOR SHASHA) -->
         <div id="admin-panel" class="screen-section">
             <button class="back-btn" onclick="showSection('main-menu')">✨ Back to Menu</button>
             <h2 style="margin-top: 0; color: #8a5a5a;">👑 Admin Dashboard</h2>
-            
             <div class="admin-block">
                 <h3 style="margin-top: 0;">🗑️ Remove a Shift</h3>
                 <input type="date" id="adminShiftDate" onchange="updateAdminEmpList()" style="margin-bottom: 10px;">
                 <select id="adminShiftEmp" style="margin-bottom: 15px;"><option value="">Select a date first...</option></select>
                 <button class="action-btn" onclick="removeAdminShift()" style="background: var(--off-red);">Remove Shift</button>
             </div>
-
             <div class="admin-block">
                 <h3 style="margin-top: 0;">📝 Manage Checklist Tasks</h3>
                 <ul id="adminChecklistList"></ul>
@@ -188,7 +181,7 @@
         </div>
     </div>
 
-    <!-- CALENDAR MODAL -->
+    <!-- MAIN CAFE SHIFT MODAL -->
     <div id="shiftModal" class="modal-overlay">
         <div class="modal-content">
             <h3 style="margin-top: 0;">Add Shift for <br><span id="displayDate" style="color: var(--primary);"></span></h3>
@@ -202,6 +195,35 @@
                 <button class="action-btn" onclick="saveShift()" style="flex: 1;">Save 🐾</button>
                 <button class="action-btn" onclick="closeModal('shiftModal')" style="flex: 1; background: #ccc; color: var(--text);">Cancel</button>
             </div>
+        </div>
+    </div>
+
+    <!-- 🌸 SHASHA TIMEFRAME SCHEDULE MODAL -->
+    <div id="shashaTimeframeModal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 380px; padding: 20px;">
+            <h3 style="margin-top: 0; color: #ff6b8f;">🌸 Schedule For <br><span id="shashaDisplayDate" style="font-size: 1.1rem; color: var(--text);"></span></h3>
+            
+            <div id="shashaTimeframeList" style="text-align: left; margin-bottom: 20px;"></div>
+
+            <div style="background: var(--bg); padding: 15px; border-radius: 15px; border: 2px dashed #ffb7b2; text-align: left;">
+                <h4 style="margin-top: 0; color: var(--text);">Add New Plan ✨</h4>
+                <input type="text" id="tfTitle" placeholder="Activity Title" style="margin-bottom: 10px; font-weight:bold;">
+                
+                <div style="display: flex; gap: 10px; margin-bottom: 10px; align-items:center;">
+                    <input type="time" id="tfStart" style="flex:1;">
+                    <span style="font-weight:bold;">to</span>
+                    <input type="time" id="tfEnd" style="flex:1;">
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                    <input type="text" id="tfLocation" placeholder="Location URL" style="flex:2; font-size: 0.8rem;">
+                    <button class="action-btn" onclick="pinCurrentLocation()" style="flex:1; padding: 8px; font-size: 0.9rem; background:#ffdac1; color:var(--text);">📍 Pin</button>
+                </div>
+
+                <button class="action-btn" onclick="saveShashaTimeframe()" style="background:#ff6b8f; color:white; width:100%;">Save Plan 💖</button>
+            </div>
+            
+            <button class="action-btn" onclick="closeModal('shashaTimeframeModal')" style="background: #ccc; margin-top: 15px;">Close</button>
         </div>
     </div>
 
@@ -243,9 +265,10 @@
         }
 
         // ==========================================
-        // 🌐 BULLETPROOF API CONNECTION
+        // 🌐 USER IDENTITY & LOGIN
         // ==========================================
         const API_URL = '/.netlify/functions/api'; 
+        let currentUser = 'main'; 
 
         function checkAutoLogin() {
             const inputField = document.getElementById('passcode');
@@ -254,22 +277,29 @@
             const desc = document.getElementById('login-desc');
             const adminBtn = document.getElementById('admin-btn-menu');
             const musicBtn = document.getElementById('musicToggle');
+            const greetingEl = document.getElementById('shashaMenuGreeting');
 
             if (inputField.value.length === 4) {
-                if (inputField.value === '1184' || inputField.value === '3394') {
+                if (inputField.value === '1184' || inputField.value === '3394' || inputField.value === '8555') {
+                    
+                    currentUser = (inputField.value === '8555') ? 'shasha' : 'main';
+                    
+                    // Hide Admin Button completely for Shasha
                     const isAdmin = (inputField.value === '3394');
                     adminBtn.style.display = isAdmin ? 'flex' : 'none';
 
                     errorMsg.style.display = 'none';
                     inputField.classList.add('success-glow');
                     inputField.disabled = true;
-                    title.innerText = isAdmin ? "Welcome Boss! 👑" : "Welcome! 😻";
-                    desc.innerText = "Entering the portal...";
                     
+                    if(currentUser === 'shasha') title.innerText = "Welcome Shasha! 🌸";
+                    else if (isAdmin) title.innerText = "Welcome Boss! 👑";
+                    else title.innerText = "Welcome! 😻";
+                    
+                    desc.innerText = "Entering the portal...";
                     triggerWelcomeConfetti();
                     
-                    // START THE MUSIC!
-                    bgMusic.play().catch(e => console.log("Music blocked by browser:", e));
+                    bgMusic.play().catch(e => console.log("Music blocked by browser"));
                     musicBtn.style.display = 'flex'; 
                     
                     setTimeout(() => {
@@ -280,6 +310,21 @@
                         title.innerText = "🔒 Portal Login";
                         desc.innerText = "Please enter your 4-digit PIN";
                         
+                        // Render Shasha's Random Cheerful Message
+                        if(currentUser === 'shasha') {
+                            const cheers = [
+                                "You are doing amazing today! 💖",
+                                "Keep shining bright, Shasha! ✨",
+                                "Don't forget to smile today! 😊",
+                                "Sending you lots of positive energy! 🌟",
+                                "You make this world a better place! 🌸"
+                            ];
+                            greetingEl.innerText = cheers[Math.floor(Math.random() * cheers.length)];
+                            greetingEl.style.display = 'block';
+                        } else {
+                            greetingEl.style.display = 'none';
+                        }
+
                         initDatePickers();
                         fetchStock();
                         fetchShifts();
@@ -323,17 +368,19 @@
         function initDatePickers() {
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('checklistDate').value = today;
+            // Initiate checklist rendering isolated for the user
+            initChecklistsAndDates(); 
         }
 
         // ==========================================
-        // 📦 STOCK MANAGEMENT
+        // 📦 STOCK MANAGEMENT (ISOLATED)
         // ==========================================
         let stockData = [];
         let itemToDeleteId = null;
         
         async function fetchStock() {
             try {
-                const res = await fetch(`${API_URL}/stock`);
+                const res = await fetch(`${API_URL}/stock?user=${currentUser}`);
                 if (!res.ok) throw new Error("Could not connect to database.");
                 stockData = await res.json();
                 renderStockUI();
@@ -351,7 +398,6 @@
             
             list.innerHTML = '';
             stockData.forEach((item) => {
-                // Notice the editable input for Quantity!
                 list.innerHTML += `
                 <li>
                     <div style="flex: 1; min-width: 120px;">
@@ -369,32 +415,28 @@
             });
         }
         
-        // Changing quantity using the + and - buttons
         async function updateStockQty(id, currentQty, changeAmount) {
             let newQty = currentQty + changeAmount;
             if (newQty < 0) newQty = 0; 
             try {
-                const res = await fetch(`${API_URL}/stock/${id}`, {
+                await fetch(`${API_URL}/stock/${id}?user=${currentUser}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ qty: newQty })
                 });
-                if (!res.ok) throw new Error("Failed to update.");
                 fetchStock();
             } catch(err) { alert("🚨 Error: " + err.message); }
         }
 
-        // Changing quantity by typing a specific number
         async function setStockQtyAbsolute(id, typedValue) {
             let newQty = parseInt(typedValue);
             if (isNaN(newQty) || newQty < 0) newQty = 0;
             try {
-                const res = await fetch(`${API_URL}/stock/${id}`, {
+                await fetch(`${API_URL}/stock/${id}?user=${currentUser}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ qty: newQty })
                 });
-                if (!res.ok) throw new Error("Failed to update.");
                 fetchStock();
             } catch(err) { alert("🚨 Error: " + err.message); }
         }
@@ -404,12 +446,11 @@
             const qty = document.getElementById('itemQty').value;
             if(name && qty) {
                 try {
-                    const res = await fetch(`${API_URL}/stock`, {
+                    await fetch(`${API_URL}/stock?user=${currentUser}`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ name: name, qty: qty })
                     });
-                    if (!res.ok) throw new Error("Failed to add item.");
                     document.getElementById('itemName').value = ''; 
                     document.getElementById('itemQty').value = ''; 
                     fetchStock();
@@ -429,10 +470,10 @@
         async function checkDeletePin() {
             const inputField = document.getElementById('deletePasscode');
             if (inputField.value.length === 4) {
-                if (inputField.value === '1184' || inputField.value === '3394') {
+                if (inputField.value === '1184' || inputField.value === '3394' || (currentUser === 'shasha' && inputField.value === '8555')) {
                     inputField.classList.add('success-glow');
                     try {
-                        await fetch(`${API_URL}/stock/${itemToDeleteId}`, { method: 'DELETE' });
+                        await fetch(`${API_URL}/stock/${itemToDeleteId}?user=${currentUser}`, { method: 'DELETE' });
                         fetchStock(); 
                         setTimeout(() => { closeModal('deleteConfirmModal'); }, 400);
                     } catch(err) { alert("🚨 Error: " + err.message); }
@@ -446,7 +487,7 @@
         }
 
         // ==========================================
-        // 📅 CALENDAR SHIFTS
+        // 📅 DUAL CALENDAR SYSTEM (SHIFTS vs TIMEFRAMES)
         // ==========================================
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         let currentDate = new Date();
@@ -462,23 +503,30 @@
 
         async function fetchShifts() {
             try {
-                const res = await fetch(`${API_URL}/shifts`);
-                if (!res.ok) throw new Error("Could not fetch calendar.");
-                const data = await res.json();
-                
-                shiftsData = {};
-                data.forEach(row => {
-                    if(!shiftsData[row.shift_date]) shiftsData[row.shift_date] = [];
-                    shiftsData[row.shift_date].push({
-                        id: row.id,
-                        name: row.emp_name,
-                        status: row.status,
-                        remark: row.remark
+                if (currentUser === 'shasha') {
+                    // Fetch Shasha's special timeframes table
+                    const res = await fetch(`${API_URL}/timeframes`);
+                    if (!res.ok) throw new Error("Could not fetch schedule.");
+                    const data = await res.json();
+                    shiftsData = {};
+                    data.forEach(row => {
+                        if(!shiftsData[row.date_key]) shiftsData[row.date_key] = [];
+                        shiftsData[row.date_key].push(row);
                     });
-                });
+                } else {
+                    // Fetch standard shifts
+                    const res = await fetch(`${API_URL}/shifts`);
+                    if (!res.ok) throw new Error("Could not fetch calendar.");
+                    const data = await res.json();
+                    shiftsData = {};
+                    data.forEach(row => {
+                        if(!shiftsData[row.shift_date]) shiftsData[row.shift_date] = [];
+                        shiftsData[row.shift_date].push({ id: row.id, name: row.emp_name, status: row.status, remark: row.remark });
+                    });
+                }
                 updateEmployeeFilterDropdown();
                 renderCalendar();
-            } catch (err) { alert("🚨 Error loading Shifts: " + err.message); }
+            } catch (err) { alert("🚨 Error loading Calendar: " + err.message); }
         }
 
         function updateCalendarSettings() { calMonth = parseInt(mSelect.value); calYear = parseInt(document.getElementById('yearSelect').value); renderCalendar(); }
@@ -486,12 +534,17 @@
         function updateEmployeeFilterDropdown() {
             const filter = document.getElementById('empFilter');
             const currentVal = filter.value;
-            let uniqueNames = new Set();
-            Object.values(shiftsData).forEach(dayArr => dayArr.forEach(shift => uniqueNames.add(shift.name)));
-
-            filter.innerHTML = `<option value="ALL">🌸 All Staff</option>`;
-            uniqueNames.forEach(name => filter.innerHTML += `<option value="${name}">👤 ${name}</option>`);
-            if(Array.from(filter.options).some(opt => opt.value === currentVal)) filter.value = currentVal;
+            
+            if(currentUser === 'shasha') {
+                filter.style.display = 'none'; // No filter needed for Shasha's personal calendar
+            } else {
+                filter.style.display = 'block';
+                let uniqueNames = new Set();
+                Object.values(shiftsData).forEach(dayArr => dayArr.forEach(shift => uniqueNames.add(shift.name)));
+                filter.innerHTML = `<option value="ALL">🌸 All Staff</option>`;
+                uniqueNames.forEach(name => filter.innerHTML += `<option value="${name}">👤 ${name}</option>`);
+                if(Array.from(filter.options).some(opt => opt.value === currentVal)) filter.value = currentVal;
+            }
         }
 
         function renderCalendar() {
@@ -510,27 +563,133 @@
                 const dayShifts = shiftsData[dateKey] || [];
                 let boxBgColor = 'white'; let tagsHTML = '';
 
-                dayShifts.forEach(shift => {
-                    if (filterName === 'ALL' || filterName.toLowerCase() === shift.name.toLowerCase()) {
-                        if(filterName !== 'ALL') boxBgColor = shift.status === 'work' ? 'var(--accent)' : 'var(--off-red)';
-                        const tagClass = shift.status === 'work' ? 'shift-work' : 'shift-off';
-                        let remarkHTML = shift.remark ? `<div class="shift-remark">${shift.remark}</div>` : "";
-                        tagsHTML += `<div class="shift-tag ${tagClass}"><span>${shift.name}</span>${remarkHTML}</div>`;
-                    }
-                });
+                if (currentUser === 'shasha') {
+                    // Shasha's View
+                    if(dayShifts.length > 0) boxBgColor = '#fff0f5'; 
+                    dayShifts.forEach(tf => {
+                        tagsHTML += `<div class="shift-tag" style="background:#ffb7b2; color:white; font-size:0.7rem; text-align:left; padding:4px;">⏰ ${tf.start_time}<br>${tf.title}</div>`;
+                    });
+                } else {
+                    // Main Cafe View
+                    dayShifts.forEach(shift => {
+                        if (filterName === 'ALL' || filterName.toLowerCase() === shift.name.toLowerCase()) {
+                            if(filterName !== 'ALL') boxBgColor = shift.status === 'work' ? 'var(--accent)' : 'var(--off-red)';
+                            const tagClass = shift.status === 'work' ? 'shift-work' : 'shift-off';
+                            let remarkHTML = shift.remark ? `<div class="shift-remark">${shift.remark}</div>` : "";
+                            tagsHTML += `<div class="shift-tag ${tagClass}"><span>${shift.name}</span>${remarkHTML}</div>`;
+                        }
+                    });
+                }
+                
                 grid.innerHTML += `<div class="calendar-cell" style="background-color: ${boxBgColor}" onclick="openModal('${dateKey}', ${day})"><div class="date-num">${day}</div>${tagsHTML}</div>`;
             }
         }
 
         function openModal(dateKey, dayNum) {
             selectedDateString = dateKey;
-            document.getElementById('displayDate').innerText = `${dayNum} ${monthNames[calMonth]} ${calYear}`;
-            document.getElementById('shiftEmpName').value = '';
-            document.getElementById('shiftRemark').value = '';
-            document.getElementById('shiftModal').style.display = 'flex';
-            setTimeout(() => document.getElementById('shiftEmpName').focus(), 100); 
+            
+            if (currentUser === 'shasha') {
+                document.getElementById('shashaDisplayDate').innerText = `${dayNum} ${monthNames[calMonth]} ${calYear}`;
+                renderShashaTimeframeList();
+                document.getElementById('tfTitle').value = '';
+                document.getElementById('tfStart').value = '';
+                document.getElementById('tfEnd').value = '';
+                document.getElementById('tfLocation').value = '';
+                document.getElementById('shashaTimeframeModal').style.display = 'flex';
+            } else {
+                document.getElementById('displayDate').innerText = `${dayNum} ${monthNames[calMonth]} ${calYear}`;
+                document.getElementById('shiftEmpName').value = '';
+                document.getElementById('shiftRemark').value = '';
+                document.getElementById('shiftModal').style.display = 'flex';
+                setTimeout(() => document.getElementById('shiftEmpName').focus(), 100); 
+            }
         }
 
+        // ==========================================
+        // 🌸 SHASHA TIMEFRAME & LOCATION PIN LOGIC
+        // ==========================================
+        function renderShashaTimeframeList() {
+            const listDiv = document.getElementById('shashaTimeframeList');
+            const dayPlans = shiftsData[selectedDateString] || [];
+            listDiv.innerHTML = '';
+            
+            if(dayPlans.length === 0) {
+                listDiv.innerHTML = '<p style="color:#888; text-align:center;">No plans yet. Add one below! ✨</p>';
+                return;
+            }
+            
+            // Sort by start time
+            dayPlans.sort((a,b) => (a.start_time || "").localeCompare(b.start_time || ""));
+
+            dayPlans.forEach(plan => {
+                const mapLink = plan.location_url ? `<a href="${plan.location_url}" target="_blank" style="color: #ff6b8f; font-size:0.85rem; font-weight:bold; display:block; margin-top:5px; text-decoration:none;">📍 Open in Google Maps</a>` : '';
+                listDiv.innerHTML += `
+                    <div style="background:white; padding:15px; border-radius:15px; border:2px solid #ffdac1; margin-bottom:10px; position:relative; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                        <button onclick="deleteShashaTimeframe(${plan.id})" style="position:absolute; top:10px; right:10px; background:#ffaaa5; border:none; border-radius:10px; width:30px; height:30px; color:white; font-weight:bold; cursor:pointer;">✖</button>
+                        <h4 style="margin:0; color:var(--text); font-size:1.1rem;">${plan.title}</h4>
+                        <p style="margin:5px 0 0 0; font-size:0.95rem; color:#666; font-weight:bold;">⏰ ${plan.start_time} - ${plan.end_time}</p>
+                        ${mapLink}
+                    </div>
+                `;
+            });
+        }
+
+        function pinCurrentLocation() {
+            const locInput = document.getElementById('tfLocation');
+            if (navigator.geolocation) {
+                locInput.value = "Locating... ⏳";
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        locInput.value = `https://www.google.com/maps?q=${lat},${lng}`;
+                    },
+                    (error) => {
+                        alert("Could not get location. Make sure you allow location access! 🌸");
+                        locInput.value = "";
+                    }
+                );
+            } else {
+                alert("Geolocation is not supported by your device.");
+            }
+        }
+
+        async function saveShashaTimeframe() {
+            const title = document.getElementById('tfTitle').value;
+            const start = document.getElementById('tfStart').value;
+            const end = document.getElementById('tfEnd').value;
+            const loc = document.getElementById('tfLocation').value;
+            
+            if(!title || !start) { alert("Title and Start Time are required! 🌸"); return; }
+
+            try {
+                await fetch(`${API_URL}/timeframes`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ date_key: selectedDateString, start_time: start, end_time: end, title: title, location_url: loc })
+                });
+                
+                document.getElementById('tfTitle').value = '';
+                document.getElementById('tfStart').value = '';
+                document.getElementById('tfEnd').value = '';
+                document.getElementById('tfLocation').value = '';
+                
+                await fetchShifts();
+                renderShashaTimeframeList();
+            } catch(err) { alert("🚨 Error saving plan: " + err.message); }
+        }
+
+        async function deleteShashaTimeframe(id) {
+            if(confirm("Remove this plan? 🌸")) {
+                await fetch(`${API_URL}/timeframes/${id}`, { method: 'DELETE' });
+                await fetchShifts();
+                renderShashaTimeframeList();
+            }
+        }
+
+        // ==========================================
+        // MAIN CAFE SHIFT API CALLS
+        // ==========================================
         async function saveShift() {
             const empName = document.getElementById('shiftEmpName').value.trim();
             const remark = document.getElementById('shiftRemark').value.trim();
@@ -539,12 +698,11 @@
             if(!empName) { alert("Please enter an employee name! 🐾"); return; }
 
             try {
-                const res = await fetch(`${API_URL}/shifts`, {
+                await fetch(`${API_URL}/shifts`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ shift_date: selectedDateString, emp_name: empName, status: status, remark: remark })
                 });
-                if(!res.ok) throw new Error("Failed to save shift.");
                 fetchShifts(); 
                 closeModal('shiftModal');
             } catch(err) { alert("🚨 Error: " + err.message); }
@@ -578,16 +736,27 @@
         }
 
         // ==========================================
-        // ✅ DAILY CHECKLIST SYSTEM (LOCAL STORAGE)
+        // ✅ DAILY CHECKLIST SYSTEM (ISOLATED)
         // ==========================================
-        let masterChecklist = JSON.parse(localStorage.getItem('cafeMasterChecklist')) || ["Turn on espresso machine", "Sweep cafe floor"];
-        let dailyChecklistData = JSON.parse(localStorage.getItem('cafeDailyChecklistData')) || {};
+        let masterChecklist = [];
+        let dailyChecklistData = {};
+
+        function initChecklistsAndDates() {
+            const masterKey = currentUser === 'shasha' ? 'shashaMasterChecklist' : 'cafeMasterChecklist';
+            const dailyKey = currentUser === 'shasha' ? 'shashaDailyChecklistData' : 'cafeDailyChecklistData';
+            
+            masterChecklist = JSON.parse(localStorage.getItem(masterKey)) || ["Turn on espresso machine", "Sweep cafe floor"];
+            dailyChecklistData = JSON.parse(localStorage.getItem(dailyKey)) || {};
+            renderChecklist();
+        }
 
         function addChecklistTask() {
             const newTask = document.getElementById('newChecklistTask').value.trim();
+            const masterKey = currentUser === 'shasha' ? 'shashaMasterChecklist' : 'cafeMasterChecklist';
+            
             if (newTask && !masterChecklist.includes(newTask)) {
                 masterChecklist.push(newTask);
-                localStorage.setItem('cafeMasterChecklist', JSON.stringify(masterChecklist));
+                localStorage.setItem(masterKey, JSON.stringify(masterChecklist));
                 document.getElementById('newChecklistTask').value = '';
                 renderChecklist();
             }
@@ -600,18 +769,54 @@
             if(!selectedDate) return;
             if(!dailyChecklistData[selectedDate]) dailyChecklistData[selectedDate] = {};
 
-            masterChecklist.forEach(task => {
+            masterChecklist.forEach((task, index) => {
                 const isChecked = dailyChecklistData[selectedDate][task] ? 'checked' : '';
-                listUI.innerHTML += `<li><label class="checklist-item"><input type="checkbox" onchange="toggleChecklistTask('${task}', this.checked)" ${isChecked}>${task}</label></li>`;
+                
+                // Advanced Controls directly on the daily page for Shasha!
+                let shashaControls = '';
+                if(currentUser === 'shasha') {
+                    shashaControls = `
+                        <div style="display:flex; gap:8px;">
+                            <button onclick="editChecklistTask(${index})" style="background:#ffdac1; border:none; border-radius:8px; padding:8px 12px; cursor:pointer; font-size:1.2rem;">✏️</button>
+                            <button onclick="deleteChecklistTask(${index})" style="background:#ffaaa5; border:none; border-radius:8px; padding:8px 12px; cursor:pointer; font-size:1.2rem;">🗑️</button>
+                        </div>
+                    `;
+                }
+
+                listUI.innerHTML += `
+                    <li style="display:flex; justify-content:space-between; align-items:center;">
+                        <label class="checklist-item" style="flex:1;"><input type="checkbox" onchange="toggleChecklistTask('${task.replace(/'/g, "\\'")}', this.checked)" ${isChecked}>${task}</label>
+                        ${shashaControls}
+                    </li>`;
             });
         }
 
         function toggleChecklistTask(taskName, isChecked) {
             const selectedDate = document.getElementById('checklistDate').value;
+            const dailyKey = currentUser === 'shasha' ? 'shashaDailyChecklistData' : 'cafeDailyChecklistData';
             dailyChecklistData[selectedDate][taskName] = isChecked;
-            localStorage.setItem('cafeDailyChecklistData', JSON.stringify(dailyChecklistData));
+            localStorage.setItem(dailyKey, JSON.stringify(dailyChecklistData));
         }
 
+        // Shasha-only On-Page Managers
+        function editChecklistTask(index) {
+            const newName = prompt("Edit task name:", masterChecklist[index]);
+            if(newName && newName.trim() !== "") {
+                masterChecklist[index] = newName.trim();
+                localStorage.setItem('shashaMasterChecklist', JSON.stringify(masterChecklist));
+                renderChecklist();
+            }
+        }
+
+        function deleteChecklistTask(index) {
+            if(confirm("Permanently delete this task? 🌸")) {
+                masterChecklist.splice(index, 1);
+                localStorage.setItem('shashaMasterChecklist', JSON.stringify(masterChecklist));
+                renderChecklist();
+            }
+        }
+
+        // Main Cafe Admin Delete
         function renderAdminChecklistManager() {
             const adminList = document.getElementById('adminChecklistList');
             adminList.innerHTML = '';
@@ -619,7 +824,6 @@
                 adminList.innerHTML += `<li><span style="font-weight: bold; font-size: 1.1rem; flex: 1;">${task}</span><button class="delete-btn" onclick="removeAdminChecklistTask(${index})" style="height: auto; padding: 6px 12px; font-size: 1rem;">Delete</button></li>`;
             });
         }
-
         function removeAdminChecklistTask(index) {
             if(confirm(`Are you sure you want to permanently delete "${masterChecklist[index]}" from all checklists?`)) {
                 masterChecklist.splice(index, 1);
@@ -628,10 +832,12 @@
             }
         }
 
-        // --- Animations, Modals & Sound Listeners ---
+        // --- Event Listeners ---
         document.getElementById('shiftModal').addEventListener('click', function(e) { if(e.target === this) closeModal('shiftModal'); });
+        document.getElementById('shashaTimeframeModal').addEventListener('click', function(e) { if(e.target === this) closeModal('shashaTimeframeModal'); });
         document.getElementById('deleteConfirmModal').addEventListener('click', function(e) { if(e.target === this) closeModal('deleteConfirmModal'); });
 
+        // Background Animation
         const cuteCats = ['🐈💨', '🐱🎈', '😻✨', '🐈☕', '😼🛹', '🧶🐈', '😸🎵', '🐈📦'];
         setInterval(() => {
             const catEl = document.getElementById('cute-cat');
@@ -640,7 +846,7 @@
             catEl.innerText = newCat;
         }, 4000); 
 
-        // Magic Click with POP SOUND!
+        // Magic Click with Sound!
         document.addEventListener('click', function(e) {
             if(['INPUT','BUTTON','SELECT','LABEL'].includes(e.target.tagName)) {
                 clickSound.currentTime = 0;
