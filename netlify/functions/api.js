@@ -4,18 +4,18 @@ const mysql = require('mysql2/promise');
 const serverless = require('serverless-http');
 
 const app = express();
-const router = express.Router(); // This router is the secret to fixing Netlify!
+const router = express.Router(); 
 
 app.use(cors());
 app.use(express.json());
 
-// 1. Connect to Aiven
+// 1. Connect to Aiven (LOOK HERE: We changed DATABASE_URL to CAFE_DB_URL)
 const pool = mysql.createPool({
-    uri: process.env.DATABASE_URL,
+    uri: process.env.CAFE_DB_URL,
     ssl: { rejectUnauthorized: false }
 });
 
-// 2. Auto-Create Tables (Just in case they don't exist yet)
+// 2. Auto-Create Tables
 async function checkTables() {
     await pool.query(`CREATE TABLE IF NOT EXISTS stock (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) NOT NULL, qty INT NOT NULL)`);
     await pool.query(`CREATE TABLE IF NOT EXISTS shifts (id INT AUTO_INCREMENT PRIMARY KEY, shift_date VARCHAR(10) NOT NULL, emp_name VARCHAR(255) NOT NULL, status VARCHAR(50) NOT NULL, remark VARCHAR(255))`);
@@ -72,9 +72,7 @@ router.post('/shifts', async (req, res) => {
         await checkTables();
         const { shift_date, emp_name, status, remark } = req.body;
         
-        // Remove old shift for this employee on this date to prevent duplicates
         await pool.query('DELETE FROM shifts WHERE shift_date = ? AND emp_name = ?', [shift_date, emp_name]);
-        // Insert new shift
         await pool.query('INSERT INTO shifts (shift_date, emp_name, status, remark) VALUES (?, ?, ?, ?)', [shift_date, emp_name, status, remark]);
         
         res.json({ success: true });
@@ -88,7 +86,7 @@ router.delete('/shifts/:id', async (req, res) => {
     } catch(err) { res.status(500).json({ error: err.message }); }
 });
 
-// 3. Bind the router to BOTH URL paths so Netlify doesn't get confused
+// 3. Bind the router to BOTH URL paths
 app.use('/api', router);
 app.use('/.netlify/functions/api', router);
 
