@@ -23,6 +23,9 @@ async function checkTables() {
     // Shasha's Isolated Tables
     await pool.query(`CREATE TABLE IF NOT EXISTS shasha_stock (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) NOT NULL, qty INT NOT NULL)`);
     await pool.query(`CREATE TABLE IF NOT EXISTS shasha_timeframes (id INT AUTO_INCREMENT PRIMARY KEY, date_key VARCHAR(10) NOT NULL, start_time VARCHAR(10), end_time VARCHAR(10), title VARCHAR(255), location_url VARCHAR(500))`);
+    
+    // NEW: Shasha's 6-in-1 Notes Table
+    await pool.query(`CREATE TABLE IF NOT EXISTS shasha_notes (id INT AUTO_INCREMENT PRIMARY KEY, category VARCHAR(50) NOT NULL, text1 TEXT, text2 TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`);
 }
 
 // ==========================================
@@ -112,6 +115,32 @@ router.post('/timeframes', async (req, res) => {
 router.delete('/timeframes/:id', async (req, res) => {
     try {
         await pool.query('DELETE FROM shasha_timeframes WHERE id = ?', [req.params.id]);
+        res.json({ success: true });
+    } catch(err) { res.status(500).json({ error: err.message }); }
+});
+
+// ==========================================
+// 📓 SHASHA 6-IN-1 NOTES API
+// ==========================================
+router.get('/notes', async (req, res) => {
+    try {
+        await checkTables();
+        const [rows] = await pool.query('SELECT * FROM shasha_notes ORDER BY id ASC');
+        res.json(rows);
+    } catch(err) { res.status(500).json({ error: err.message }); }
+});
+
+router.post('/notes', async (req, res) => {
+    try {
+        const { category, text1, text2 } = req.body;
+        await pool.query('INSERT INTO shasha_notes (category, text1, text2) VALUES (?, ?, ?)', [category, text1, text2]);
+        res.json({ success: true });
+    } catch(err) { res.status(500).json({ error: err.message }); }
+});
+
+router.delete('/notes/:id', async (req, res) => {
+    try {
+        await pool.query('DELETE FROM shasha_notes WHERE id = ?', [req.params.id]);
         res.json({ success: true });
     } catch(err) { res.status(500).json({ error: err.message }); }
 });
