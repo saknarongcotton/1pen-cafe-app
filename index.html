@@ -8,7 +8,7 @@
     <style>
         :root { --primary: #ffb7b2; --secondary: #ffdac1; --accent: #e2f0cb; --off-red: #ffaaa5; --text: #5c4033; --bg: #fff0f5; }
         body { font-family: 'Nunito', sans-serif; background-color: var(--bg); background-image: radial-gradient(#ffd1dc 3px, transparent 3px); background-size: 30px 30px; color: var(--text); margin: 0; padding: 0; overflow-x: hidden; }
-        header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: var(--text); padding: 1.5rem; text-align: center; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; box-shadow: 0 10px 20px rgba(255, 183, 178, 0.4); margin-bottom: 20px; position: relative; }
+        header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: var(--text); padding: 1.5rem; text-align: center; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; box-shadow: 0 10px 20px rgba(255, 183, 178, 0.4); margin-bottom: 20px; position: relative; transition: all 0.5s ease; }
         h1 { margin: 0; font-size: 2.2rem; font-weight: 900; animation: floatTitle 3s ease-in-out infinite; line-height: 1.2; }
         .container { max-width: 900px; margin: 0 auto; padding: 0 15px 40px 15px; }
         .screen-section { display: none; background: white; padding: 25px; border-radius: 25px; border: 3px solid var(--secondary); box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-top: 20px; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; overflow: hidden; }
@@ -21,6 +21,11 @@
         .btn-menu:hover { background-color: var(--primary); color: white; transform: translateY(-5px) scale(1.03); border-color: white; }
         #admin-btn-menu { display: none; background-color: #fff0f5; border-color: #d4a5a5; color: #8a5a5a; }
         #admin-btn-menu:hover { background-color: #d4a5a5; color: white; }
+        
+        /* Shasha's Notes Button */
+        #shasha-notes-btn { display: none; background-color: #ffe4e1; border-color: #ffb7b2; }
+        #shasha-notes-btn:hover { background-color: #ffb7b2; color: white; }
+
         .back-btn { background-color: var(--secondary); color: var(--text); font-weight: bold; font-family: 'Nunito', sans-serif; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; margin-bottom: 20px; font-size: 1rem; transition: transform 0.2s; position: relative; z-index: 10; }
         .back-btn:hover { transform: translateX(-5px); background-color: var(--primary); color: white; }
         select, input[type="number"], input[type="text"], input[type="password"], input[type="date"], input[type="time"] { padding: 12px; border: 2px solid var(--secondary); border-radius: 15px; font-size: 1rem; font-family: 'Nunito', sans-serif; outline: none; background: white; box-sizing: border-box; width: 100%; }
@@ -75,9 +80,9 @@
 </head>
 <body>
 
-    <header>
-        <h1>🐈 1PEN Cafe & Co 🐾<br><span style="font-size: 1.2rem;">(ร้านกาแฟวันเพ็ญ)</span></h1>
-        <p style="margin-top: 5px; font-weight: bold; font-size: 1.1rem;">Employee Portal</p>
+    <header id="main-header">
+        <h1 id="header-title">🐈 1PEN Cafe & Co 🐾<br><span id="header-subtitle" style="font-size: 1.2rem;">(ร้านกาแฟวันเพ็ญ)</span></h1>
+        <p id="header-desc" style="margin-top: 5px; font-weight: bold; font-size: 1.1rem;">Employee Portal</p>
         <button id="musicToggle" onclick="toggleMusic()">🔊</button>
     </header>
 
@@ -99,10 +104,14 @@
             <h2 style="text-align: center; color: var(--text); margin-top: 0;">What would you like to do? 🧶</h2>
             
             <div class="grid">
-                <button class="btn-menu" onclick="showSection('calendar')"><span style="font-size: 2rem;">📅</span> Calendar & Schedule</button>
-                <button class="btn-menu" onclick="showSection('stock')"><span style="font-size: 2rem;">📦</span> Stock & Inventory</button>
+                <button class="btn-menu" onclick="showSection('calendar')"><span style="font-size: 2rem;">📅</span> <span id="cal-btn-text">Calendar & Shifts</span></button>
+                <button class="btn-menu" id="main-stock-btn" onclick="showSection('stock')"><span style="font-size: 2rem;">📦</span> Stock & Inventory</button>
                 <button class="btn-menu" onclick="showSection('tasks')"><span style="font-size: 2rem;">✅</span> Daily Checklists</button>
-                <button class="btn-menu" onclick="showSection('cat-care')"><span style="font-size: 2rem;">🐾</span> Cat Care Log</button>
+                <button class="btn-menu" id="main-catcare-btn" onclick="showSection('cat-care')"><span style="font-size: 2rem;">🐾</span> Cat Care Log</button>
+                
+                <!-- SHASHA EXCLUSIVE NOTES BUTTON -->
+                <button class="btn-menu" id="shasha-notes-btn" onclick="showSection('shasha-notes-section')"><span style="font-size: 2rem;">📓</span> Shasha's Notes</button>
+                
                 <button class="btn-menu" id="admin-btn-menu" onclick="showSection('admin-panel')"><span style="font-size: 2rem;">👑</span> Admin Dashboard</button>
             </div>
         </div>
@@ -111,7 +120,7 @@
         <div id="calendar" class="screen-section">
             <div class="running-cat" id="cute-cat">🐈💨</div>
             <button class="back-btn" onclick="showSection('main-menu')">✨ Back to Menu</button>
-            <h2 style="position: relative; z-index: 10; margin-top: 0;">📅 Cafe Schedule</h2>
+            <h2 style="position: relative; z-index: 10; margin-top: 0;">📅 Schedule</h2>
             <div class="calendar-controls">
                 <select id="monthSelect" onchange="updateCalendarSettings()"></select>
                 <input type="number" id="yearSelect" onchange="updateCalendarSettings()">
@@ -120,7 +129,7 @@
             <div class="calendar-grid" id="calendarGrid"></div>
         </div>
 
-        <!-- TOOL: ADMIN DASHBOARD (HIDDEN FOR SHASHA) -->
+        <!-- TOOL: ADMIN DASHBOARD (Main Cafe Only) -->
         <div id="admin-panel" class="screen-section">
             <button class="back-btn" onclick="showSection('main-menu')">✨ Back to Menu</button>
             <h2 style="margin-top: 0; color: #8a5a5a;">👑 Admin Dashboard</h2>
@@ -136,7 +145,7 @@
             </div>
         </div>
 
-        <!-- TOOL 2: STOCK MANAGEMENT -->
+        <!-- TOOL 2: STOCK MANAGEMENT (Main Cafe Only) -->
         <div id="stock" class="screen-section">
             <button class="back-btn" onclick="showSection('main-menu')">✨ Back to Menu</button>
             <div class="flex-row stock-header-row" style="justify-content: space-between; align-items: center; margin-bottom: 15px;">
@@ -172,12 +181,93 @@
             <ul id="dailyChecklistUI"></ul>
         </div>
 
-        <!-- TOOL 4: CAT CARE -->
+        <!-- TOOL 4: CAT CARE (Main Cafe Only) -->
         <div id="cat-care" class="screen-section">
             <button class="back-btn" onclick="showSection('main-menu')">✨ Back to Menu</button>
             <h2 style="margin-top:0;">🐾 Cat Care Log</h2>
             <button class="action-btn" style="margin-bottom:15px;">Log Morning Feeding 🥣</button>
             <button class="action-btn" style="background:var(--secondary); color:var(--text);">Log Litter Box 🧽</button>
+        </div>
+
+        <!-- TOOL 5: SHASHA'S 6-IN-1 PRIVATE NOTES -->
+        <div id="shasha-notes-section" class="screen-section" style="background-color: #fffafb; border-color: #ffb7b2;">
+            <button class="back-btn" onclick="showSection('main-menu')">✨ Back to Menu</button>
+            <h2 style="margin-top:0; color:#ff6b8f; font-size:2rem;">📓 My Private Notes</h2>
+            <p style="margin-bottom:20px; font-weight:bold;">Everything here is secretly stored in the cloud just for you! ☁️</p>
+
+            <div class="grid" style="grid-template-columns: 1fr;">
+                
+                <!-- Sub 1: Quick Thoughts -->
+                <div class="admin-block" style="border-color:#ffd1dc; margin-top:0;">
+                    <h3 style="margin-top:0;">💭 Quick Thoughts</h3>
+                    <div class="flex-row">
+                        <input type="text" id="note-thought-1" placeholder="What's on your mind?">
+                        <button class="action-btn" onclick="saveNote('thought', 'note-thought-1')" style="width:100px;">Save</button>
+                    </div>
+                    <ul id="list-thought"></ul>
+                </div>
+
+                <!-- Sub 2: Shopping List -->
+                <div class="admin-block" style="border-color:#ffd1dc; margin-top:0;">
+                    <h3 style="margin-top:0;">🛍️ To-Buy List</h3>
+                    <div class="flex-row">
+                        <input type="text" id="note-buy-1" placeholder="Item to buy" style="flex:2;">
+                        <input type="text" id="note-buy-2" placeholder="Qty / Details" style="flex:1;">
+                        <button class="action-btn" onclick="saveNote('buy', 'note-buy-1', 'note-buy-2')" style="width:100px;">Save</button>
+                    </div>
+                    <ul id="list-buy"></ul>
+                </div>
+
+                <!-- Sub 3: Expenses -->
+                <div class="admin-block" style="border-color:#ffd1dc; margin-top:0;">
+                    <h3 style="margin-top:0;">💸 Expense Tracker</h3>
+                    <div class="flex-row">
+                        <input type="text" id="note-expense-1" placeholder="What did you buy?" style="flex:2;">
+                        <input type="number" id="note-expense-2" placeholder="Amount (฿)" style="flex:1;">
+                        <button class="action-btn" onclick="saveNote('expense', 'note-expense-1', 'note-expense-2')" style="width:100px; background:#a8e6cf;">Add</button>
+                    </div>
+                    <ul id="list-expense"></ul>
+                </div>
+
+                <!-- Sub 4: Saved Links -->
+                <div class="admin-block" style="border-color:#ffd1dc; margin-top:0;">
+                    <h3 style="margin-top:0;">🔗 Saved Links</h3>
+                    <div class="flex-row">
+                        <input type="text" id="note-link-1" placeholder="Website Name" style="flex:1;">
+                        <input type="text" id="note-link-2" placeholder="URL (e.g. www.google.com)" style="flex:2;">
+                        <button class="action-btn" onclick="saveNote('link', 'note-link-1', 'note-link-2')" style="width:100px;">Save</button>
+                    </div>
+                    <ul id="list-link"></ul>
+                </div>
+
+                <!-- Sub 5: Cat Diary -->
+                <div class="admin-block" style="border-color:#ffd1dc; margin-top:0;">
+                    <h3 style="margin-top:0;">🐈 Cat Diary & Weight</h3>
+                    <div class="flex-row">
+                        <select id="note-cat-1" style="flex:1;">
+                            <option value="Cotton">Cotton</option>
+                            <option value="Honey">Honey</option>
+                            <option value="Boobies">Boobies</option>
+                            <option value="Rosie">Rosie</option>
+                        </select>
+                        <input type="text" id="note-cat-2" placeholder="Weight or note..." style="flex:2;">
+                        <button class="action-btn" onclick="saveNote('diary', 'note-cat-1', 'note-cat-2')" style="width:100px;">Save</button>
+                    </div>
+                    <ul id="list-diary"></ul>
+                </div>
+
+                <!-- Sub 6: Passwords/Secrets -->
+                <div class="admin-block" style="border-color:#ffd1dc; margin-top:0;">
+                    <h3 style="margin-top:0;">🔑 Secrets & Goals</h3>
+                    <div class="flex-row">
+                        <input type="text" id="note-secret-1" placeholder="Account or Goal name" style="flex:1;">
+                        <input type="password" id="note-secret-2" placeholder="Secret Details" style="flex:2;">
+                        <button class="action-btn" onclick="saveNote('secret', 'note-secret-1', 'note-secret-2')" style="width:100px;">Save</button>
+                    </div>
+                    <ul id="list-secret"></ul>
+                </div>
+
+            </div>
         </div>
     </div>
 
@@ -227,6 +317,15 @@
         </div>
     </div>
 
+    <!-- 🌸 SHASHA WELCOME MODAL -->
+    <div id="shashaWelcomeModal" class="modal-overlay" style="z-index: 10001; background: rgba(255, 183, 178, 0.8);">
+        <div class="modal-content" style="border-color: #ff88a7;">
+            <h2 style="color: #ff6b8f; font-size: 2.2rem; margin-top: 0;">Welcome my Shasha 🌸</h2>
+            <p id="shashaCheerMessage" style="font-size: 1.3rem; font-weight: bold; color: var(--text);"></p>
+            <button class="action-btn" onclick="closeModal('shashaWelcomeModal')" style="background: #ff88a7; margin-top: 15px; font-size: 1.2rem;">Let's Go! ✨</button>
+        </div>
+    </div>
+
     <!-- STOCK DELETE CONFIRMATION MODAL -->
     <div id="deleteConfirmModal" class="modal-overlay">
         <div class="modal-content" style="max-width: 300px;">
@@ -242,30 +341,18 @@
         // ==========================================
         // 🎵 AUDIO ENGINE
         // ==========================================
-        const bgMusic = new Audio('music.mp3'); 
-        bgMusic.loop = true;
-        bgMusic.volume = 0.3; 
-
-        const clickSound = new Audio('pop.mp3');
-        clickSound.volume = 0.6; 
-
+        const bgMusic = new Audio('music.mp3'); bgMusic.loop = true; bgMusic.volume = 0.3; 
+        const clickSound = new Audio('pop.mp3'); clickSound.volume = 0.6; 
         let isMusicPlaying = true;
 
         function toggleMusic() {
             const btn = document.getElementById('musicToggle');
-            if (isMusicPlaying) {
-                bgMusic.pause();
-                btn.innerText = '🔇';
-                isMusicPlaying = false;
-            } else {
-                bgMusic.play();
-                btn.innerText = '🔊';
-                isMusicPlaying = true;
-            }
+            if (isMusicPlaying) { bgMusic.pause(); btn.innerText = '🔇'; isMusicPlaying = false; } 
+            else { bgMusic.play(); btn.innerText = '🔊'; isMusicPlaying = true; }
         }
 
         // ==========================================
-        // 🌐 USER IDENTITY & LOGIN
+        // 🌐 API & IDENTITY (SHAPESHIFTING UI)
         // ==========================================
         const API_URL = '/.netlify/functions/api'; 
         let currentUser = 'main'; 
@@ -274,33 +361,54 @@
             const inputField = document.getElementById('passcode');
             const errorMsg = document.getElementById('login-error');
             const title = document.getElementById('login-title');
-            const desc = document.getElementById('login-desc');
-            const adminBtn = document.getElementById('admin-btn-menu');
-            const musicBtn = document.getElementById('musicToggle');
-            const greetingEl = document.getElementById('shashaMenuGreeting');
 
             if (inputField.value.length === 4) {
                 if (inputField.value === '1184' || inputField.value === '3394' || inputField.value === '8555') {
                     
                     currentUser = (inputField.value === '8555') ? 'shasha' : 'main';
-                    
-                    // Hide Admin Button completely for Shasha
                     const isAdmin = (inputField.value === '3394');
-                    adminBtn.style.display = isAdmin ? 'flex' : 'none';
 
+                    // ==================================================
+                    // 🪄 THE SHAPESHIFTING MAGIC HAPPENS HERE
+                    // ==================================================
+                    if (currentUser === 'shasha') {
+                        // 1. Change the Header Text completely
+                        document.getElementById('header-title').innerHTML = '🐈 Shasha Land 🐾<br><span id="header-subtitle" style="font-size: 1.2rem;">The parent of four children</span>';
+                        document.getElementById('header-desc').innerText = 'Cotton Honey Boobies Rosie';
+                        
+                        // 2. Hide Cafe Tools & Admin Button
+                        document.getElementById('main-stock-btn').style.display = 'none';
+                        document.getElementById('main-catcare-btn').style.display = 'none';
+                        document.getElementById('admin-btn-menu').style.display = 'none';
+                        
+                        // 3. Show Shasha's Private Tools
+                        document.getElementById('shasha-notes-btn').style.display = 'flex';
+                        document.getElementById('cal-btn-text').innerText = 'My Schedule';
+
+                        // 4. Set Welcome Text
+                        title.innerText = "Welcome Shasha! 🌸";
+                    } else {
+                        // Restore Original Main Cafe UI
+                        document.getElementById('header-title').innerHTML = '🐈 1PEN Cafe & Co 🐾<br><span id="header-subtitle" style="font-size: 1.2rem;">(ร้านกาแฟวันเพ็ญ)</span>';
+                        document.getElementById('header-desc').innerText = 'Employee Portal';
+                        document.getElementById('main-stock-btn').style.display = 'flex';
+                        document.getElementById('main-catcare-btn').style.display = 'flex';
+                        document.getElementById('admin-btn-menu').style.display = isAdmin ? 'flex' : 'none';
+                        document.getElementById('shasha-notes-btn').style.display = 'none';
+                        document.getElementById('cal-btn-text').innerText = 'Calendar & Shifts';
+                        
+                        title.innerText = isAdmin ? "Welcome Boss! 👑" : "Welcome! 😻";
+                    }
+
+                    // Proceed with login sequence...
                     errorMsg.style.display = 'none';
                     inputField.classList.add('success-glow');
                     inputField.disabled = true;
+                    document.getElementById('login-desc').innerText = "Entering the portal...";
                     
-                    if(currentUser === 'shasha') title.innerText = "Welcome Shasha! 🌸";
-                    else if (isAdmin) title.innerText = "Welcome Boss! 👑";
-                    else title.innerText = "Welcome! 😻";
-                    
-                    desc.innerText = "Entering the portal...";
                     triggerWelcomeConfetti();
-                    
-                    bgMusic.play().catch(e => console.log("Music blocked by browser"));
-                    musicBtn.style.display = 'flex'; 
+                    bgMusic.play().catch(e => console.log("Music blocked"));
+                    document.getElementById('musicToggle').style.display = 'flex'; 
                     
                     setTimeout(() => {
                         showSection('main-menu');
@@ -308,27 +416,35 @@
                         inputField.classList.remove('success-glow');
                         inputField.disabled = false;
                         title.innerText = "🔒 Portal Login";
-                        desc.innerText = "Please enter your 4-digit PIN";
+                        document.getElementById('login-desc').innerText = "Please enter your 4-digit PIN";
                         
-                        // Render Shasha's Random Cheerful Message
+                        // Shasha Greeting Modal
                         if(currentUser === 'shasha') {
                             const cheers = [
                                 "You are doing amazing today! 💖",
                                 "Keep shining bright, Shasha! ✨",
                                 "Don't forget to smile today! 😊",
                                 "Sending you lots of positive energy! 🌟",
-                                "You make this world a better place! 🌸"
+                                "You make this world a better place! 🌸",
+                                "Take a deep breath, you got this! 🍵"
                             ];
-                            greetingEl.innerText = cheers[Math.floor(Math.random() * cheers.length)];
-                            greetingEl.style.display = 'block';
+                            document.getElementById('shashaCheerMessage').innerText = cheers[Math.floor(Math.random() * cheers.length)];
+                            document.getElementById('shashaWelcomeModal').style.display = 'flex';
+                            
+                            // Random Top Page Greeting
+                            document.getElementById('shashaMenuGreeting').innerText = cheers[Math.floor(Math.random() * cheers.length)];
+                            document.getElementById('shashaMenuGreeting').style.display = 'block';
                         } else {
-                            greetingEl.style.display = 'none';
+                            document.getElementById('shashaMenuGreeting').style.display = 'none';
                         }
 
+                        // Load data
                         initDatePickers();
-                        fetchStock();
+                        if(currentUser !== 'shasha') fetchStock();
                         fetchShifts();
+                        if(currentUser === 'shasha') fetchShashaNotes();
                     }, 2200);
+
                 } else {
                     inputField.classList.remove('shake-error');
                     void inputField.offsetWidth; 
@@ -345,12 +461,8 @@
                 setTimeout(() => {
                     const el = document.createElement('div');
                     el.innerText = emojis[Math.floor(Math.random() * emojis.length)];
-                    el.className = 'confetti';
-                    el.style.left = (Math.random() * 100) + 'vw';
-                    el.style.fontSize = (Math.random() * 2 + 1) + 'rem';
-                    el.style.animationDuration = (Math.random() * 1.5 + 1.5) + 's';
-                    document.body.appendChild(el);
-                    setTimeout(() => el.remove(), 3000);
+                    el.className = 'confetti'; el.style.left = (Math.random() * 100) + 'vw'; el.style.fontSize = (Math.random() * 2 + 1) + 'rem'; el.style.animationDuration = (Math.random() * 1.5 + 1.5) + 's';
+                    document.body.appendChild(el); setTimeout(() => el.remove(), 3000);
                 }, i * 40);
             }
         }
@@ -368,145 +480,99 @@
         function initDatePickers() {
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('checklistDate').value = today;
-            // Initiate checklist rendering isolated for the user
             initChecklistsAndDates(); 
         }
 
         // ==========================================
-        // 📦 STOCK MANAGEMENT (ISOLATED)
+        // 📓 SHASHA 6-IN-1 PRIVATE NOTES (MYSQL)
         // ==========================================
-        let stockData = [];
-        let itemToDeleteId = null;
-        
-        async function fetchStock() {
+        let allNotes = [];
+
+        async function fetchShashaNotes() {
+            if(currentUser !== 'shasha') return;
             try {
-                const res = await fetch(`${API_URL}/stock?user=${currentUser}`);
-                if (!res.ok) throw new Error("Could not connect to database.");
-                stockData = await res.json();
-                renderStockUI();
-            } catch (err) { alert("🚨 Error loading Stock: " + err.message); }
+                const res = await fetch(`${API_URL}/notes`);
+                allNotes = await res.json();
+                renderShashaNotes();
+            } catch (err) { console.log(err); }
         }
 
-        function renderStockUI() {
-            const list = document.getElementById('stockList'); 
-            const sortVal = document.getElementById('stockSort').value;
-            
-            if (sortVal === 'nameAsc') stockData.sort((a, b) => a.name.localeCompare(b.name));
-            else if (sortVal === 'nameDesc') stockData.sort((a, b) => b.name.localeCompare(a.name));
-            else if (sortVal === 'qtyDesc') stockData.sort((a, b) => parseInt(b.qty) - parseInt(a.qty));
-            else if (sortVal === 'qtyAsc') stockData.sort((a, b) => parseInt(a.qty) - parseInt(b.qty));
-            
-            list.innerHTML = '';
-            stockData.forEach((item) => {
-                list.innerHTML += `
-                <li>
-                    <div style="flex: 1; min-width: 120px;">
-                        <div class="stock-item-name">${item.name}</div>
-                        <div class="stock-item-qty">
-                            Qty: <input type="number" class="qty-edit-input" value="${item.qty}" onchange="setStockQtyAbsolute(${item.id}, this.value)">
-                        </div>
-                    </div>
-                    <div style="display: flex; gap: 8px; align-items: center;">
-                        <button class="qty-btn" onclick="updateStockQty(${item.id}, ${item.qty}, -1)">-</button>
-                        <button class="qty-btn" onclick="updateStockQty(${item.id}, ${item.qty}, 1)">+</button>
-                        <button class="delete-btn" style="margin-left: 5px;" onclick="promptDeleteStock(${item.id}, '${item.name.replace(/'/g, "\\'")}')">✖</button>
-                    </div>
-                </li>`;
+        async function saveNote(category, id1, id2 = null) {
+            const t1 = document.getElementById(id1).value.trim();
+            const t2 = id2 ? document.getElementById(id2).value.trim() : "";
+            if(!t1) return;
+
+            try {
+                await fetch(`${API_URL}/notes`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ category: category, text1: t1, text2: t2 })
+                });
+                document.getElementById(id1).value = '';
+                if(id2) document.getElementById(id2).value = '';
+                fetchShashaNotes();
+            } catch(err) { alert("🚨 Failed to save note!"); }
+        }
+
+        async function deleteNote(id) {
+            if(confirm("Permanently delete this note? 🌸")) {
+                await fetch(`${API_URL}/notes/${id}`, { method: 'DELETE' });
+                fetchShashaNotes();
+            }
+        }
+
+        function renderShashaNotes() {
+            // Clear all 6 lists first
+            ['thought', 'buy', 'expense', 'link', 'diary', 'secret'].forEach(cat => {
+                const el = document.getElementById(`list-${cat}`);
+                if(el) el.innerHTML = '';
+            });
+
+            // Distribute notes to their proper UI box
+            allNotes.forEach(note => {
+                const ul = document.getElementById(`list-${note.category}`);
+                if(ul) {
+                    let displayHTML = `<span style="font-weight:bold; font-size:1.1rem; color:var(--text);">${note.text1}</span>`;
+                    
+                    if(note.text2) {
+                        if(note.category === 'link') {
+                            const url = note.text2.startsWith('http') ? note.text2 : 'https://' + note.text2;
+                            displayHTML = `<a href="${url}" target="_blank" style="font-weight:bold; font-size:1.1rem; color:#ff6b8f; text-decoration:none;">🔗 ${note.text1}</a>`;
+                        } else if (note.category === 'expense') {
+                            displayHTML = `<span style="font-weight:bold; font-size:1.1rem; color:var(--text);">${note.text1}</span> <br><span style="color:#e74c3c; font-weight:900;">฿${note.text2}</span>`;
+                        } else if (note.category === 'secret') {
+                            displayHTML = `<span style="font-weight:bold; font-size:1.1rem; color:var(--text);">${note.text1}</span> <br><span style="color:#888; font-size:0.9rem;">${note.text2}</span>`;
+                        } else {
+                            displayHTML += ` <span style="color:#666; font-size:0.9rem; font-weight:bold; margin-left:10px;">${note.text2}</span>`;
+                        }
+                    }
+
+                    ul.innerHTML += `
+                        <li style="display:flex; justify-content:space-between; align-items:center;">
+                            <div style="flex:1;">${displayHTML}</div>
+                            <button class="delete-btn" style="height:auto; padding:6px 12px; font-size:1rem; margin-left:10px;" onclick="deleteNote(${note.id})">✖</button>
+                        </li>
+                    `;
+                }
             });
         }
-        
-        async function updateStockQty(id, currentQty, changeAmount) {
-            let newQty = currentQty + changeAmount;
-            if (newQty < 0) newQty = 0; 
-            try {
-                await fetch(`${API_URL}/stock/${id}?user=${currentUser}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ qty: newQty })
-                });
-                fetchStock();
-            } catch(err) { alert("🚨 Error: " + err.message); }
-        }
 
-        async function setStockQtyAbsolute(id, typedValue) {
-            let newQty = parseInt(typedValue);
-            if (isNaN(newQty) || newQty < 0) newQty = 0;
-            try {
-                await fetch(`${API_URL}/stock/${id}?user=${currentUser}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ qty: newQty })
-                });
-                fetchStock();
-            } catch(err) { alert("🚨 Error: " + err.message); }
-        }
-
-        async function addStockItem() {
-            const name = document.getElementById('itemName').value;
-            const qty = document.getElementById('itemQty').value;
-            if(name && qty) {
-                try {
-                    await fetch(`${API_URL}/stock?user=${currentUser}`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ name: name, qty: qty })
-                    });
-                    document.getElementById('itemName').value = ''; 
-                    document.getElementById('itemQty').value = ''; 
-                    fetchStock();
-                } catch(err) { alert("🚨 Error: " + err.message); }
-            }
-        }
-
-        function promptDeleteStock(id, name) {
-            itemToDeleteId = id;
-            document.getElementById('deleteItemNameDisplay').innerText = name;
-            document.getElementById('deletePasscode').value = ''; 
-            document.getElementById('deletePasscode').classList.remove('shake-error', 'success-glow');
-            document.getElementById('deleteConfirmModal').style.display = 'flex';
-            setTimeout(() => document.getElementById('deletePasscode').focus(), 100);
-        }
-
-        async function checkDeletePin() {
-            const inputField = document.getElementById('deletePasscode');
-            if (inputField.value.length === 4) {
-                if (inputField.value === '1184' || inputField.value === '3394' || (currentUser === 'shasha' && inputField.value === '8555')) {
-                    inputField.classList.add('success-glow');
-                    try {
-                        await fetch(`${API_URL}/stock/${itemToDeleteId}?user=${currentUser}`, { method: 'DELETE' });
-                        fetchStock(); 
-                        setTimeout(() => { closeModal('deleteConfirmModal'); }, 400);
-                    } catch(err) { alert("🚨 Error: " + err.message); }
-                } else {
-                    inputField.classList.remove('shake-error');
-                    void inputField.offsetWidth; 
-                    inputField.classList.add('shake-error');
-                    setTimeout(() => { inputField.value = ''; }, 400);
-                }
-            }
-        }
 
         // ==========================================
         // 📅 DUAL CALENDAR SYSTEM (SHIFTS vs TIMEFRAMES)
         // ==========================================
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        let currentDate = new Date();
-        let calMonth = currentDate.getMonth();
-        let calYear = currentDate.getFullYear();
-        let selectedDateString = "";
-        let shiftsData = {}; 
+        let currentDate = new Date(); let calMonth = currentDate.getMonth(); let calYear = currentDate.getFullYear();
+        let selectedDateString = ""; let shiftsData = {}; 
 
         const mSelect = document.getElementById('monthSelect');
         monthNames.forEach((m, i) => mSelect.innerHTML += `<option value="${i}">${m}</option>`);
-        mSelect.value = calMonth;
-        document.getElementById('yearSelect').value = calYear;
+        mSelect.value = calMonth; document.getElementById('yearSelect').value = calYear;
 
         async function fetchShifts() {
             try {
                 if (currentUser === 'shasha') {
-                    // Fetch Shasha's special timeframes table
                     const res = await fetch(`${API_URL}/timeframes`);
-                    if (!res.ok) throw new Error("Could not fetch schedule.");
                     const data = await res.json();
                     shiftsData = {};
                     data.forEach(row => {
@@ -514,9 +580,7 @@
                         shiftsData[row.date_key].push(row);
                     });
                 } else {
-                    // Fetch standard shifts
                     const res = await fetch(`${API_URL}/shifts`);
-                    if (!res.ok) throw new Error("Could not fetch calendar.");
                     const data = await res.json();
                     shiftsData = {};
                     data.forEach(row => {
@@ -524,9 +588,8 @@
                         shiftsData[row.shift_date].push({ id: row.id, name: row.emp_name, status: row.status, remark: row.remark });
                     });
                 }
-                updateEmployeeFilterDropdown();
-                renderCalendar();
-            } catch (err) { alert("🚨 Error loading Calendar: " + err.message); }
+                updateEmployeeFilterDropdown(); renderCalendar();
+            } catch (err) {}
         }
 
         function updateCalendarSettings() { calMonth = parseInt(mSelect.value); calYear = parseInt(document.getElementById('yearSelect').value); renderCalendar(); }
@@ -534,10 +597,8 @@
         function updateEmployeeFilterDropdown() {
             const filter = document.getElementById('empFilter');
             const currentVal = filter.value;
-            
-            if(currentUser === 'shasha') {
-                filter.style.display = 'none'; // No filter needed for Shasha's personal calendar
-            } else {
+            if(currentUser === 'shasha') { filter.style.display = 'none'; } 
+            else {
                 filter.style.display = 'block';
                 let uniqueNames = new Set();
                 Object.values(shiftsData).forEach(dayArr => dayArr.forEach(shift => uniqueNames.add(shift.name)));
@@ -552,25 +613,18 @@
             const filterName = document.getElementById('empFilter').value;
             const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
             days.forEach(d => grid.innerHTML += `<div class="day-header">${d}</div>`);
-
-            const firstDay = new Date(calYear, calMonth, 1).getDay();
-            const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+            const firstDay = new Date(calYear, calMonth, 1).getDay(); const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
 
             for(let i = 0; i < firstDay; i++) grid.innerHTML += `<div></div>`;
-
             for(let day = 1; day <= daysInMonth; day++) {
                 const dateKey = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
                 const dayShifts = shiftsData[dateKey] || [];
                 let boxBgColor = 'white'; let tagsHTML = '';
 
                 if (currentUser === 'shasha') {
-                    // Shasha's View
                     if(dayShifts.length > 0) boxBgColor = '#fff0f5'; 
-                    dayShifts.forEach(tf => {
-                        tagsHTML += `<div class="shift-tag" style="background:#ffb7b2; color:white; font-size:0.7rem; text-align:left; padding:4px;">⏰ ${tf.start_time}<br>${tf.title}</div>`;
-                    });
+                    dayShifts.forEach(tf => { tagsHTML += `<div class="shift-tag" style="background:#ffb7b2; color:white; font-size:0.7rem; text-align:left; padding:4px;">⏰ ${tf.start_time}<br>${tf.title}</div>`; });
                 } else {
-                    // Main Cafe View
                     dayShifts.forEach(shift => {
                         if (filterName === 'ALL' || filterName.toLowerCase() === shift.name.toLowerCase()) {
                             if(filterName !== 'ALL') boxBgColor = shift.status === 'work' ? 'var(--accent)' : 'var(--off-red)';
@@ -580,28 +634,21 @@
                         }
                     });
                 }
-                
                 grid.innerHTML += `<div class="calendar-cell" style="background-color: ${boxBgColor}" onclick="openModal('${dateKey}', ${day})"><div class="date-num">${day}</div>${tagsHTML}</div>`;
             }
         }
 
         function openModal(dateKey, dayNum) {
             selectedDateString = dateKey;
-            
             if (currentUser === 'shasha') {
                 document.getElementById('shashaDisplayDate').innerText = `${dayNum} ${monthNames[calMonth]} ${calYear}`;
                 renderShashaTimeframeList();
-                document.getElementById('tfTitle').value = '';
-                document.getElementById('tfStart').value = '';
-                document.getElementById('tfEnd').value = '';
-                document.getElementById('tfLocation').value = '';
+                document.getElementById('tfTitle').value = ''; document.getElementById('tfStart').value = ''; document.getElementById('tfEnd').value = ''; document.getElementById('tfLocation').value = '';
                 document.getElementById('shashaTimeframeModal').style.display = 'flex';
             } else {
                 document.getElementById('displayDate').innerText = `${dayNum} ${monthNames[calMonth]} ${calYear}`;
-                document.getElementById('shiftEmpName').value = '';
-                document.getElementById('shiftRemark').value = '';
-                document.getElementById('shiftModal').style.display = 'flex';
-                setTimeout(() => document.getElementById('shiftEmpName').focus(), 100); 
+                document.getElementById('shiftEmpName').value = ''; document.getElementById('shiftRemark').value = '';
+                document.getElementById('shiftModal').style.display = 'flex'; setTimeout(() => document.getElementById('shiftEmpName').focus(), 100); 
             }
         }
 
@@ -612,13 +659,7 @@
             const listDiv = document.getElementById('shashaTimeframeList');
             const dayPlans = shiftsData[selectedDateString] || [];
             listDiv.innerHTML = '';
-            
-            if(dayPlans.length === 0) {
-                listDiv.innerHTML = '<p style="color:#888; text-align:center;">No plans yet. Add one below! ✨</p>';
-                return;
-            }
-            
-            // Sort by start time
+            if(dayPlans.length === 0) { listDiv.innerHTML = '<p style="color:#888; text-align:center;">No plans yet. Add one below! ✨</p>'; return; }
             dayPlans.sort((a,b) => (a.start_time || "").localeCompare(b.start_time || ""));
 
             dayPlans.forEach(plan => {
@@ -639,104 +680,41 @@
             if (navigator.geolocation) {
                 locInput.value = "Locating... ⏳";
                 navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        const lat = position.coords.latitude;
-                        const lng = position.coords.longitude;
-                        locInput.value = `https://www.google.com/maps?q=${lat},${lng}`;
-                    },
-                    (error) => {
-                        alert("Could not get location. Make sure you allow location access! 🌸");
-                        locInput.value = "";
-                    }
+                    (position) => { locInput.value = `https://www.google.com/maps?q=${position.coords.latitude},${position.coords.longitude}`; },
+                    (error) => { alert("Could not get location. Make sure you allow location access! 🌸"); locInput.value = ""; }
                 );
-            } else {
-                alert("Geolocation is not supported by your device.");
-            }
+            } else { alert("Geolocation is not supported by your device."); }
         }
 
         async function saveShashaTimeframe() {
-            const title = document.getElementById('tfTitle').value;
-            const start = document.getElementById('tfStart').value;
-            const end = document.getElementById('tfEnd').value;
-            const loc = document.getElementById('tfLocation').value;
-            
+            const title = document.getElementById('tfTitle').value; const start = document.getElementById('tfStart').value; const end = document.getElementById('tfEnd').value; const loc = document.getElementById('tfLocation').value;
             if(!title || !start) { alert("Title and Start Time are required! 🌸"); return; }
-
             try {
-                await fetch(`${API_URL}/timeframes`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ date_key: selectedDateString, start_time: start, end_time: end, title: title, location_url: loc })
-                });
-                
-                document.getElementById('tfTitle').value = '';
-                document.getElementById('tfStart').value = '';
-                document.getElementById('tfEnd').value = '';
-                document.getElementById('tfLocation').value = '';
-                
-                await fetchShifts();
-                renderShashaTimeframeList();
+                await fetch(`${API_URL}/timeframes`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ date_key: selectedDateString, start_time: start, end_time: end, title: title, location_url: loc }) });
+                document.getElementById('tfTitle').value = ''; document.getElementById('tfStart').value = ''; document.getElementById('tfEnd').value = ''; document.getElementById('tfLocation').value = '';
+                await fetchShifts(); renderShashaTimeframeList();
             } catch(err) { alert("🚨 Error saving plan: " + err.message); }
         }
 
         async function deleteShashaTimeframe(id) {
             if(confirm("Remove this plan? 🌸")) {
                 await fetch(`${API_URL}/timeframes/${id}`, { method: 'DELETE' });
-                await fetchShifts();
-                renderShashaTimeframeList();
+                await fetchShifts(); renderShashaTimeframeList();
             }
         }
 
-        // ==========================================
-        // MAIN CAFE SHIFT API CALLS
-        // ==========================================
+        // Main Cafe Shift logic
         async function saveShift() {
-            const empName = document.getElementById('shiftEmpName').value.trim();
-            const remark = document.getElementById('shiftRemark').value.trim();
-            const status = document.querySelector('input[name="shiftStatus"]:checked').value;
-            
+            const empName = document.getElementById('shiftEmpName').value.trim(); const remark = document.getElementById('shiftRemark').value.trim(); const status = document.querySelector('input[name="shiftStatus"]:checked').value;
             if(!empName) { alert("Please enter an employee name! 🐾"); return; }
-
             try {
-                await fetch(`${API_URL}/shifts`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ shift_date: selectedDateString, emp_name: empName, status: status, remark: remark })
-                });
-                fetchShifts(); 
-                closeModal('shiftModal');
-            } catch(err) { alert("🚨 Error: " + err.message); }
-        }
-
-        function updateAdminEmpList() {
-            const dateVal = document.getElementById('adminShiftDate').value;
-            const empSelect = document.getElementById('adminShiftEmp');
-            empSelect.innerHTML = '<option value="">Select an employee...</option>';
-            if(dateVal && shiftsData[dateVal] && shiftsData[dateVal].length > 0) {
-                shiftsData[dateVal].forEach((shift, index) => {
-                    const statusText = shift.status === 'work' ? '🟢 Working' : '🔴 Off';
-                    empSelect.innerHTML += `<option value="${index}">${shift.name} (${statusText})</option>`;
-                });
-            } else if (dateVal) {
-                empSelect.innerHTML = '<option value="">No shifts found for this date.</option>';
-            }
-        }
-
-        async function removeAdminShift() {
-            const dateVal = document.getElementById('adminShiftDate').value;
-            const empIndex = document.getElementById('adminShiftEmp').value;
-            if(!dateVal || empIndex === "") { alert("⚠️ Please select a date and an employee first!"); return; }
-            
-            const shiftId = shiftsData[dateVal][empIndex].id;
-            try {
-                await fetch(`${API_URL}/shifts/${shiftId}`, { method: 'DELETE' });
-                fetchShifts(); 
-                alert(`✅ Shift successfully removed.`);
+                await fetch(`${API_URL}/shifts`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ shift_date: selectedDateString, emp_name: empName, status: status, remark: remark }) });
+                fetchShifts(); closeModal('shiftModal');
             } catch(err) { alert("🚨 Error: " + err.message); }
         }
 
         // ==========================================
-        // ✅ DAILY CHECKLIST SYSTEM (ISOLATED)
+        // ✅ DAILY CHECKLIST SYSTEM (LOCAL STORAGE)
         // ==========================================
         let masterChecklist = [];
         let dailyChecklistData = {};
@@ -753,7 +731,6 @@
         function addChecklistTask() {
             const newTask = document.getElementById('newChecklistTask').value.trim();
             const masterKey = currentUser === 'shasha' ? 'shashaMasterChecklist' : 'cafeMasterChecklist';
-            
             if (newTask && !masterChecklist.includes(newTask)) {
                 masterChecklist.push(newTask);
                 localStorage.setItem(masterKey, JSON.stringify(masterChecklist));
@@ -798,7 +775,6 @@
             localStorage.setItem(dailyKey, JSON.stringify(dailyChecklistData));
         }
 
-        // Shasha-only On-Page Managers
         function editChecklistTask(index) {
             const newName = prompt("Edit task name:", masterChecklist[index]);
             if(newName && newName.trim() !== "") {
@@ -816,54 +792,56 @@
             }
         }
 
-        // Main Cafe Admin Delete
-        function renderAdminChecklistManager() {
-            const adminList = document.getElementById('adminChecklistList');
-            adminList.innerHTML = '';
-            masterChecklist.forEach((task, index) => {
-                adminList.innerHTML += `<li><span style="font-weight: bold; font-size: 1.1rem; flex: 1;">${task}</span><button class="delete-btn" onclick="removeAdminChecklistTask(${index})" style="height: auto; padding: 6px 12px; font-size: 1rem;">Delete</button></li>`;
+        // ==========================================
+        // 📦 CAFE STOCK & ADMIN FUNCTIONS
+        // ==========================================
+        async function fetchStock() {
+            try {
+                const res = await fetch(`${API_URL}/stock`);
+                if (!res.ok) throw new Error("Could not connect to database.");
+                stockData = await res.json();
+                renderStockUI();
+            } catch (err) { alert("🚨 Error loading Stock: " + err.message); }
+        }
+
+        function renderStockUI() {
+            const list = document.getElementById('stockList'); 
+            const sortVal = document.getElementById('stockSort').value;
+            if (sortVal === 'nameAsc') stockData.sort((a, b) => a.name.localeCompare(b.name));
+            else if (sortVal === 'nameDesc') stockData.sort((a, b) => b.name.localeCompare(a.name));
+            else if (sortVal === 'qtyDesc') stockData.sort((a, b) => parseInt(b.qty) - parseInt(a.qty));
+            else if (sortVal === 'qtyAsc') stockData.sort((a, b) => parseInt(a.qty) - parseInt(b.qty));
+            list.innerHTML = '';
+            stockData.forEach((item) => {
+                list.innerHTML += `<li><div style="flex: 1; min-width: 120px;"><div class="stock-item-name">${item.name}</div><div class="stock-item-qty">Qty: <input type="number" class="qty-edit-input" value="${item.qty}" onchange="setStockQtyAbsolute(${item.id}, this.value)"></div></div><div style="display: flex; gap: 8px; align-items: center;"><button class="qty-btn" onclick="updateStockQty(${item.id}, ${item.qty}, -1)">-</button><button class="qty-btn" onclick="updateStockQty(${item.id}, ${item.qty}, 1)">+</button><button class="delete-btn" style="margin-left: 5px;" onclick="promptDeleteStock(${item.id}, '${item.name.replace(/'/g, "\\'")}')">✖</button></div></li>`;
             });
         }
-        function removeAdminChecklistTask(index) {
-            if(confirm(`Are you sure you want to permanently delete "${masterChecklist[index]}" from all checklists?`)) {
-                masterChecklist.splice(index, 1);
-                localStorage.setItem('cafeMasterChecklist', JSON.stringify(masterChecklist));
-                renderAdminChecklistManager();
-            }
-        }
+        
+        async function updateStockQty(id, currentQty, changeAmount) { let newQty = currentQty + changeAmount; if (newQty < 0) newQty = 0; try { await fetch(`${API_URL}/stock/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ qty: newQty }) }); fetchStock(); } catch(err) { alert("🚨 Error: " + err.message); } }
+        async function setStockQtyAbsolute(id, typedValue) { let newQty = parseInt(typedValue); if (isNaN(newQty) || newQty < 0) newQty = 0; try { await fetch(`${API_URL}/stock/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ qty: newQty }) }); fetchStock(); } catch(err) { alert("🚨 Error: " + err.message); } }
+        async function addStockItem() { const name = document.getElementById('itemName').value; const qty = document.getElementById('itemQty').value; if(name && qty) { try { await fetch(`${API_URL}/stock`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: name, qty: qty }) }); document.getElementById('itemName').value = ''; document.getElementById('itemQty').value = ''; fetchStock(); } catch(err) { alert("🚨 Error: " + err.message); } } }
 
-        // --- Event Listeners ---
+        function promptDeleteStock(id, name) { itemToDeleteId = id; document.getElementById('deleteItemNameDisplay').innerText = name; document.getElementById('deletePasscode').value = ''; document.getElementById('deletePasscode').classList.remove('shake-error', 'success-glow'); document.getElementById('deleteConfirmModal').style.display = 'flex'; setTimeout(() => document.getElementById('deletePasscode').focus(), 100); }
+        async function checkDeletePin() { const inputField = document.getElementById('deletePasscode'); if (inputField.value.length === 4) { if (inputField.value === '1184' || inputField.value === '3394') { inputField.classList.add('success-glow'); try { await fetch(`${API_URL}/stock/${itemToDeleteId}`, { method: 'DELETE' }); fetchStock(); setTimeout(() => { closeModal('deleteConfirmModal'); }, 400); } catch(err) { alert("🚨 Error: " + err.message); } } else { inputField.classList.remove('shake-error'); void inputField.offsetWidth; inputField.classList.add('shake-error'); setTimeout(() => { inputField.value = ''; }, 400); } } }
+
+        function updateAdminEmpList() { const dateVal = document.getElementById('adminShiftDate').value; const empSelect = document.getElementById('adminShiftEmp'); empSelect.innerHTML = '<option value="">Select an employee...</option>'; if(dateVal && shiftsData[dateVal] && shiftsData[dateVal].length > 0) { shiftsData[dateVal].forEach((shift, index) => { const statusText = shift.status === 'work' ? '🟢 Working' : '🔴 Off'; empSelect.innerHTML += `<option value="${index}">${shift.name} (${statusText})</option>`; }); } else if (dateVal) { empSelect.innerHTML = '<option value="">No shifts found for this date.</option>'; } }
+        async function removeAdminShift() { const dateVal = document.getElementById('adminShiftDate').value; const empIndex = document.getElementById('adminShiftEmp').value; if(!dateVal || empIndex === "") { alert("⚠️ Please select a date and an employee first!"); return; } const shiftId = shiftsData[dateVal][empIndex].id; try { await fetch(`${API_URL}/shifts/${shiftId}`, { method: 'DELETE' }); fetchShifts(); alert(`✅ Shift successfully removed.`); } catch(err) { alert("🚨 Error: " + err.message); } }
+        function renderAdminChecklistManager() { const adminList = document.getElementById('adminChecklistList'); adminList.innerHTML = ''; masterChecklist.forEach((task, index) => { adminList.innerHTML += `<li><span style="font-weight: bold; font-size: 1.1rem; flex: 1;">${task}</span><button class="delete-btn" onclick="removeAdminChecklistTask(${index})" style="height: auto; padding: 6px 12px; font-size: 1rem;">Delete</button></li>`; }); }
+        function removeAdminChecklistTask(index) { if(confirm(`Are you sure you want to permanently delete "${masterChecklist[index]}" from all checklists?`)) { masterChecklist.splice(index, 1); localStorage.setItem('cafeMasterChecklist', JSON.stringify(masterChecklist)); renderAdminChecklistManager(); } }
+
+        // Event Listeners
         document.getElementById('shiftModal').addEventListener('click', function(e) { if(e.target === this) closeModal('shiftModal'); });
         document.getElementById('shashaTimeframeModal').addEventListener('click', function(e) { if(e.target === this) closeModal('shashaTimeframeModal'); });
+        document.getElementById('shashaWelcomeModal').addEventListener('click', function(e) { if(e.target === this) closeModal('shashaWelcomeModal'); });
         document.getElementById('deleteConfirmModal').addEventListener('click', function(e) { if(e.target === this) closeModal('deleteConfirmModal'); });
 
-        // Background Animation
         const cuteCats = ['🐈💨', '🐱🎈', '😻✨', '🐈☕', '😼🛹', '🧶🐈', '😸🎵', '🐈📦'];
-        setInterval(() => {
-            const catEl = document.getElementById('cute-cat');
-            let newCat = cuteCats[Math.floor(Math.random() * cuteCats.length)];
-            while(catEl.innerText === newCat) newCat = cuteCats[Math.floor(Math.random() * cuteCats.length)];
-            catEl.innerText = newCat;
-        }, 4000); 
+        setInterval(() => { const catEl = document.getElementById('cute-cat'); let newCat = cuteCats[Math.floor(Math.random() * cuteCats.length)]; while(catEl.innerText === newCat) newCat = cuteCats[Math.floor(Math.random() * cuteCats.length)]; catEl.innerText = newCat; }, 4000); 
 
-        // Magic Click with Sound!
         document.addEventListener('click', function(e) {
-            if(['INPUT','BUTTON','SELECT','LABEL'].includes(e.target.tagName)) {
-                clickSound.currentTime = 0;
-                clickSound.play().catch(e => {}); 
-                return; 
-            }
-            
-            clickSound.currentTime = 0;
-            clickSound.play().catch(e => {}); 
-
-            const effects = ['🐾', '✨', '💖', '🧶'];
-            const el = document.createElement('div');
-            el.innerText = effects[Math.floor(Math.random() * effects.length)];
-            el.className = 'magic-click';
-            el.style.left = e.pageX + 'px'; el.style.top = e.pageY + 'px';
-            document.body.appendChild(el);
-            setTimeout(() => el.remove(), 800);
+            if(['INPUT','BUTTON','SELECT','LABEL'].includes(e.target.tagName)) { clickSound.currentTime = 0; clickSound.play().catch(e => {}); return; }
+            clickSound.currentTime = 0; clickSound.play().catch(e => {}); 
+            const effects = ['🐾', '✨', '💖', '🧶']; const el = document.createElement('div'); el.innerText = effects[Math.floor(Math.random() * effects.length)]; el.className = 'magic-click'; el.style.left = e.pageX + 'px'; el.style.top = e.pageY + 'px'; document.body.appendChild(el); setTimeout(() => el.remove(), 800);
         });
     </script>
 </body>
