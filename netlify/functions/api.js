@@ -4,59 +4,93 @@ const mysql = require('mysql2/promise');
 const serverless = require('serverless-http');
 
 const app = express();
+const router = express.Router(); // This router is the secret to fixing Netlify!
+
 app.use(cors());
 app.use(express.json());
 
-// Connect to Aiven MySQL (using Netlify Environment Variables)
+// 1. Connect to Aiven
 const pool = mysql.createPool({
     uri: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false }
 });
 
+// 2. Auto-Create Tables (Just in case they don't exist yet)
+async function checkTables() {
+    await pool.query(`CREATE TABLE IF NOT EXISTS stock (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) NOT NULL, qty INT NOT NULL)`);
+    await pool.query(`CREATE TABLE IF NOT EXISTS shifts (id INT AUTO_INCREMENT PRIMARY KEY, shift_date VARCHAR(10) NOT NULL, emp_name VARCHAR(255) NOT NULL, status VARCHAR(50) NOT NULL, remark VARCHAR(255))`);
+}
+
 // ==========================================
 // 📦 STOCK API ROUTES
 // ==========================================
-app.get('/api/stock', async (req, res) => {
-    const [rows] = await pool.query('SELECT * FROM stock ORDER BY name ASC');
-    res.json(rows);
+router.get('/stock', async (req, res) => {
+    try {
+        await checkTables();
+        const [rows] = await pool.query('SELECT * FROM stock ORDER BY name ASC');
+        res.json(rows);
+    } catch(err) { res.status(500).json({ error: err.message }); }
 });
 
-app.post('/api/stock', async (req, res) => {
-    const { name, qty } = req.body;
-    await pool.query('INSERT INTO stock (name, qty) VALUES (?, ?)', [name, qty]);
-    res.json({ success: true });
+router.post('/stock', async (req, res) => {
+    try {
+        await checkTables();
+        const { name, qty } = req.body;
+        await pool.query('INSERT INTO stock (name, qty) VALUES (?, ?)', [name, qty]);
+        res.json({ success: true });
+    } catch(err) { res.status(500).json({ error: err.message }); }
 });
 
-app.put('/api/stock/:id', async (req, res) => {
-    const { qty } = req.body;
-    await pool.query('UPDATE stock SET qty = ? WHERE id = ?', [qty, req.params.id]);
-    res.json({ success: true });
+router.put('/stock/:id', async (req, res) => {
+    try {
+        const { qty } = req.body;
+        await pool.query('UPDATE stock SET qty = ? WHERE id = ?', [qty, req.params.id]);
+        res.json({ success: true });
+    } catch(err) { res.status(500).json({ error: err.message }); }
 });
 
-app.delete('/api/stock/:id', async (req, res) => {
-    await pool.query('DELETE FROM stock WHERE id = ?', [req.params.id]);
-    res.json({ success: true });
+router.delete('/stock/:id', async (req, res) => {
+    try {
+        await pool.query('DELETE FROM stock WHERE id = ?', [req.params.id]);
+        res.json({ success: true });
+    } catch(err) { res.status(500).json({ error: err.message }); }
 });
 
 // ==========================================
 // 📅 CALENDAR SHIFTS API ROUTES
 // ==========================================
-app.get('/api/shifts', async (req, res) => {
-    const [rows] = await pool.query('SELECT * FROM shifts');
-    res.json(rows);
+router.get('/shifts', async (req, res) => {
+    try {
+        await checkTables();
+        const [rows] = await pool.query('SELECT * FROM shifts');
+        res.json(rows);
+    } catch(err) { res.status(500).json({ error: err.message }); }
 });
 
-app.post('/api/shifts', async (req, res) => {
-    const { shift_date, emp_name, status, remark } = req.body;
-    await pool.query('DELETE FROM shifts WHERE shift_date = ? AND emp_name = ?', [shift_date, emp_name]);
-    await pool.query('INSERT INTO shifts (shift_date, emp_name, status, remark) VALUES (?, ?, ?, ?)', [shift_date, emp_name, status, remark]);
-    res.json({ success: true });
+router.post('/shifts', async (req, res) => {
+    try {
+        await checkTables();
+        const { shift_date, emp_name, status, remark } = req.body;
+        
+        // Remove old shift for this employee on this date to prevent duplicates
+        await pool.query('DELETE FROM shifts WHERE shift_date = ? AND emp_name = ?', [shift_date, emp_name]);
+        // Insert new shift
+        await pool.query('INSERT INTO shifts (shift_date, emp_name, status, remark) VALUES (?, ?, ?, ?)', [shift_date, emp_name, status, remark]);
+        
+        res.json({ success: true });
+    } catch(err) { res.status(500).json({ error: err.message }); }
 });
 
-app.delete('/api/shifts/:id', async (req, res) => {
-    await pool.query('DELETE FROM shifts WHERE id = ?', [req.params.id]);
-    res.json({ success: true });
+router.delete('/shifts/:id', async (req, res) => {
+    try {
+        await pool.query('DELETE FROM shifts WHERE id = ?', [req.params.id]);
+        res.json({ success: true });
+    } catch(err) { res.status(500).json({ error: err.message }); }
 });
 
-// Export the serverless app
+// 3. Bind the router to BOTH URL paths so Netlify doesn't get confused
+app.use('/api', router);
+app.use('/.netlify/functions/api', router);
+
+// Export for Netlify
 module.exports.handler = serverless(app);
