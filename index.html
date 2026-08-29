@@ -8,7 +8,7 @@
     <style>
         :root { --primary: #ffb7b2; --secondary: #ffdac1; --accent: #e2f0cb; --off-red: #ffaaa5; --text: #5c4033; --bg: #fff0f5; }
         body { font-family: 'Nunito', sans-serif; background-color: var(--bg); background-image: radial-gradient(#ffd1dc 3px, transparent 3px); background-size: 30px 30px; color: var(--text); margin: 0; padding: 0; overflow-x: hidden; }
-        header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: var(--text); padding: 1.5rem; text-align: center; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; box-shadow: 0 10px 20px rgba(255, 183, 178, 0.4); margin-bottom: 20px; }
+        header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: var(--text); padding: 1.5rem; text-align: center; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; box-shadow: 0 10px 20px rgba(255, 183, 178, 0.4); margin-bottom: 20px; position: relative; }
         h1 { margin: 0; font-size: 2.2rem; font-weight: 900; animation: floatTitle 3s ease-in-out infinite; line-height: 1.2; }
         .container { max-width: 900px; margin: 0 auto; padding: 0 15px 40px 15px; }
         .screen-section { display: none; background: white; padding: 25px; border-radius: 25px; border: 3px solid var(--secondary); box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-top: 20px; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; overflow: hidden; }
@@ -47,8 +47,14 @@
         .radio-group input[type="radio"] { transform: scale(1.3); accent-color: var(--primary); }
         ul { list-style-type: none; padding: 0; margin: 0; }
         li { background: var(--bg); margin: 10px 0; padding: 15px; border-radius: 15px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; border: 2px dashed var(--primary); gap: 10px;}
+        
         .stock-item-name { font-size: 1.6rem; font-weight: 900; color: var(--text); line-height: 1.2; word-break: break-word; }
-        .stock-item-qty { font-size: 1.3rem; font-weight: 700; color: #7a5c53; }
+        .stock-item-qty { font-size: 1.3rem; font-weight: 700; color: #7a5c53; display: flex; align-items: center; gap: 8px; margin-top: 5px;}
+        
+        /* NEW EDITABLE QTY INPUT */
+        .qty-edit-input { width: 70px; padding: 5px; font-size: 1.3rem; font-weight: 900; color: var(--text); border: 2px dashed var(--primary); border-radius: 10px; text-align: center; background: white; transition: all 0.2s; }
+        .qty-edit-input:focus { border-style: solid; border-color: var(--accent); box-shadow: 0 0 10px rgba(226, 240, 203, 0.8); }
+
         .qty-btn { background: var(--secondary); color: var(--text); border: none; border-radius: 10px; width: 45px; height: 45px; font-weight: bold; cursor: pointer; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
         .qty-btn:hover { background: var(--primary); color: white; transform: scale(1.1); }
         .delete-btn { background: #ff9aa2; color: white; border: none; border-radius: 10px; padding: 10px 15px; cursor: pointer; font-weight: bold; height: 45px; font-size: 1.2rem;}
@@ -57,6 +63,11 @@
         .checklist-item input[type="checkbox"] { transform: scale(1.8); width: auto; cursor: pointer; accent-color: var(--primary);}
         .admin-block { background: #fffafb; padding: 20px; border-radius: 15px; border: 2px dashed #d4a5a5; margin-top: 15px; margin-bottom: 20px;}
         .flex-row { display: flex; gap: 10px; margin-bottom: 15px; align-items: center; }
+
+        /* Mute Button Style */
+        #musicToggle { position: absolute; top: 15px; right: 15px; background: white; border: 2px solid var(--primary); border-radius: 50%; width: 45px; height: 45px; cursor: pointer; font-size: 1.2rem; box-shadow: 0 4px 10px rgba(255, 183, 178, 0.4); display: none; align-items: center; justify-content: center; transition: all 0.2s; }
+        #musicToggle:hover { transform: scale(1.1); }
+
         @keyframes floatTitle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
         @keyframes popIn { 0% { opacity: 0; transform: scale(0.9) translateY(10px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-10px); } 40%, 80% { transform: translateX(10px); } }
@@ -65,7 +76,7 @@
         @keyframes confettiFall { 0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; } 100% { transform: translateY(110vh) rotate(360deg); opacity: 0; } }
         .magic-click { position: absolute; pointer-events: none; font-size: 1.8rem; animation: magicFloat 0.8s ease-out forwards; z-index: 10000; }
         .confetti { position: fixed; z-index: 10000; pointer-events: none; animation: confettiFall 2.5s linear forwards; }
-        @media (max-width: 600px) { h1 { font-size: 1.8rem; } .calendar-grid { gap: 4px; } .calendar-cell { padding: 4px; min-height: 70px; } .shift-tag { font-size: 0.65rem; padding: 4px; } .flex-row { flex-direction: column; align-items: stretch; } .stock-header-row { flex-direction: column; align-items: flex-start !important; gap: 10px; } .qty-btn, .delete-btn { width: 40px; height: 40px; font-size: 1.2rem; } .stock-item-name { font-size: 1.4rem; } .stock-item-qty { font-size: 1.1rem; } }
+        @media (max-width: 600px) { h1 { font-size: 1.8rem; } .calendar-grid { gap: 4px; } .calendar-cell { padding: 4px; min-height: 70px; } .shift-tag { font-size: 0.65rem; padding: 4px; } .flex-row { flex-direction: column; align-items: stretch; } .stock-header-row { flex-direction: column; align-items: flex-start !important; gap: 10px; } .qty-btn, .delete-btn { width: 40px; height: 40px; font-size: 1.2rem; } .stock-item-name { font-size: 1.4rem; } .stock-item-qty { font-size: 1.1rem; } .qty-edit-input { width: 55px; font-size: 1.1rem; padding: 3px; } }
         @media (min-width: 601px) { .grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); } }
     </style>
 </head>
@@ -74,6 +85,7 @@
     <header>
         <h1>🐈 1PEN Cafe & Co 🐾<br><span style="font-size: 1.2rem;">(ร้านกาแฟวันเพ็ญ)</span></h1>
         <p style="margin-top: 5px; font-weight: bold; font-size: 1.1rem;">Employee Portal</p>
+        <button id="musicToggle" onclick="toggleMusic()">🔊</button>
     </header>
 
     <div class="container">
@@ -206,9 +218,34 @@
 
     <script>
         // ==========================================
+        // 🎵 AUDIO ENGINE
+        // ==========================================
+        const bgMusic = new Audio('music.mp3'); 
+        bgMusic.loop = true;
+        bgMusic.volume = 0.3; 
+
+        const clickSound = new Audio('pop.mp3');
+        clickSound.volume = 0.6; 
+
+        let isMusicPlaying = true;
+
+        function toggleMusic() {
+            const btn = document.getElementById('musicToggle');
+            if (isMusicPlaying) {
+                bgMusic.pause();
+                btn.innerText = '🔇';
+                isMusicPlaying = false;
+            } else {
+                bgMusic.play();
+                btn.innerText = '🔊';
+                isMusicPlaying = true;
+            }
+        }
+
+        // ==========================================
         // 🌐 BULLETPROOF API CONNECTION
         // ==========================================
-        const API_URL = '/.netlify/functions/api'; // Guaranteed direct path to bypass routing issues
+        const API_URL = '/.netlify/functions/api'; 
 
         function checkAutoLogin() {
             const inputField = document.getElementById('passcode');
@@ -216,6 +253,7 @@
             const title = document.getElementById('login-title');
             const desc = document.getElementById('login-desc');
             const adminBtn = document.getElementById('admin-btn-menu');
+            const musicBtn = document.getElementById('musicToggle');
 
             if (inputField.value.length === 4) {
                 if (inputField.value === '1184' || inputField.value === '3394') {
@@ -227,7 +265,12 @@
                     inputField.disabled = true;
                     title.innerText = isAdmin ? "Welcome Boss! 👑" : "Welcome! 😻";
                     desc.innerText = "Entering the portal...";
+                    
                     triggerWelcomeConfetti();
+                    
+                    // START THE MUSIC!
+                    bgMusic.play().catch(e => console.log("Music blocked by browser:", e));
+                    musicBtn.style.display = 'flex'; 
                     
                     setTimeout(() => {
                         showSection('main-menu');
@@ -291,7 +334,7 @@
         async function fetchStock() {
             try {
                 const res = await fetch(`${API_URL}/stock`);
-                if (!res.ok) throw new Error("Could not connect to database. Did you set DATABASE_URL?");
+                if (!res.ok) throw new Error("Could not connect to database.");
                 stockData = await res.json();
                 renderStockUI();
             } catch (err) { alert("🚨 Error loading Stock: " + err.message); }
@@ -308,24 +351,43 @@
             
             list.innerHTML = '';
             stockData.forEach((item) => {
+                // Notice the editable input for Quantity!
                 list.innerHTML += `
                 <li>
                     <div style="flex: 1; min-width: 120px;">
                         <div class="stock-item-name">${item.name}</div>
-                        <div class="stock-item-qty">Qty: ${item.qty}</div>
+                        <div class="stock-item-qty">
+                            Qty: <input type="number" class="qty-edit-input" value="${item.qty}" onchange="setStockQtyAbsolute(${item.id}, this.value)">
+                        </div>
                     </div>
                     <div style="display: flex; gap: 8px; align-items: center;">
                         <button class="qty-btn" onclick="updateStockQty(${item.id}, ${item.qty}, -1)">-</button>
                         <button class="qty-btn" onclick="updateStockQty(${item.id}, ${item.qty}, 1)">+</button>
-                        <button class="delete-btn" style="margin-left: 5px;" onclick="promptDeleteStock(${item.id}, '${item.name}')">✖</button>
+                        <button class="delete-btn" style="margin-left: 5px;" onclick="promptDeleteStock(${item.id}, '${item.name.replace(/'/g, "\\'")}')">✖</button>
                     </div>
                 </li>`;
             });
         }
         
+        // Changing quantity using the + and - buttons
         async function updateStockQty(id, currentQty, changeAmount) {
             let newQty = currentQty + changeAmount;
             if (newQty < 0) newQty = 0; 
+            try {
+                const res = await fetch(`${API_URL}/stock/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ qty: newQty })
+                });
+                if (!res.ok) throw new Error("Failed to update.");
+                fetchStock();
+            } catch(err) { alert("🚨 Error: " + err.message); }
+        }
+
+        // Changing quantity by typing a specific number
+        async function setStockQtyAbsolute(id, typedValue) {
+            let newQty = parseInt(typedValue);
+            if (isNaN(newQty) || newQty < 0) newQty = 0;
             try {
                 const res = await fetch(`${API_URL}/stock/${id}`, {
                     method: 'PUT',
@@ -488,7 +550,6 @@
             } catch(err) { alert("🚨 Error: " + err.message); }
         }
 
-        // Admin Shift Removal
         function updateAdminEmpList() {
             const dateVal = document.getElementById('adminShiftDate').value;
             const empSelect = document.getElementById('adminShiftEmp');
@@ -567,7 +628,7 @@
             }
         }
 
-        // --- Animations & Modals Listeners ---
+        // --- Animations, Modals & Sound Listeners ---
         document.getElementById('shiftModal').addEventListener('click', function(e) { if(e.target === this) closeModal('shiftModal'); });
         document.getElementById('deleteConfirmModal').addEventListener('click', function(e) { if(e.target === this) closeModal('deleteConfirmModal'); });
 
@@ -579,8 +640,17 @@
             catEl.innerText = newCat;
         }, 4000); 
 
+        // Magic Click with POP SOUND!
         document.addEventListener('click', function(e) {
-            if(['INPUT','BUTTON','SELECT','LABEL'].includes(e.target.tagName)) return; 
+            if(['INPUT','BUTTON','SELECT','LABEL'].includes(e.target.tagName)) {
+                clickSound.currentTime = 0;
+                clickSound.play().catch(e => {}); 
+                return; 
+            }
+            
+            clickSound.currentTime = 0;
+            clickSound.play().catch(e => {}); 
+
             const effects = ['🐾', '✨', '💖', '🧶'];
             const el = document.createElement('div');
             el.innerText = effects[Math.floor(Math.random() * effects.length)];
