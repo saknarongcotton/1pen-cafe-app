@@ -9,86 +9,113 @@ const router = express.Router();
 app.use(cors());
 app.use(express.json());
 
-// 1. Connect to Aiven (LOOK HERE: We changed DATABASE_URL to CAFE_DB_URL)
 const pool = mysql.createPool({
     uri: process.env.CAFE_DB_URL,
     ssl: { rejectUnauthorized: false }
 });
 
-// 2. Auto-Create Tables
+// Auto-Create ALL Tables
 async function checkTables() {
+    // Main Cafe Tables
     await pool.query(`CREATE TABLE IF NOT EXISTS stock (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) NOT NULL, qty INT NOT NULL)`);
     await pool.query(`CREATE TABLE IF NOT EXISTS shifts (id INT AUTO_INCREMENT PRIMARY KEY, shift_date VARCHAR(10) NOT NULL, emp_name VARCHAR(255) NOT NULL, status VARCHAR(50) NOT NULL, remark VARCHAR(255))`);
+    
+    // Shasha's Isolated Tables
+    await pool.query(`CREATE TABLE IF NOT EXISTS shasha_stock (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) NOT NULL, qty INT NOT NULL)`);
+    await pool.query(`CREATE TABLE IF NOT EXISTS shasha_timeframes (id INT AUTO_INCREMENT PRIMARY KEY, date_key VARCHAR(10) NOT NULL, start_time VARCHAR(10), end_time VARCHAR(10), title VARCHAR(255), location_url VARCHAR(500))`);
 }
 
 // ==========================================
-// 📦 STOCK API ROUTES
+// 📦 STOCK API
 // ==========================================
 router.get('/stock', async (req, res) => {
     try {
         await checkTables();
-        const [rows] = await pool.query('SELECT * FROM stock ORDER BY name ASC');
+        const table = req.query.user === 'shasha' ? 'shasha_stock' : 'stock';
+        const [rows] = await pool.query(`SELECT * FROM ${table} ORDER BY name ASC`);
         res.json(rows);
     } catch(err) { res.status(500).json({ error: err.message }); }
 });
 
 router.post('/stock', async (req, res) => {
     try {
-        await checkTables();
+        const table = req.query.user === 'shasha' ? 'shasha_stock' : 'stock';
         const { name, qty } = req.body;
-        await pool.query('INSERT INTO stock (name, qty) VALUES (?, ?)', [name, qty]);
+        await pool.query(`INSERT INTO ${table} (name, qty) VALUES (?, ?)`, [name, qty]);
         res.json({ success: true });
     } catch(err) { res.status(500).json({ error: err.message }); }
 });
 
 router.put('/stock/:id', async (req, res) => {
     try {
+        const table = req.query.user === 'shasha' ? 'shasha_stock' : 'stock';
         const { qty } = req.body;
-        await pool.query('UPDATE stock SET qty = ? WHERE id = ?', [qty, req.params.id]);
+        await pool.query(`UPDATE ${table} SET qty = ? WHERE id = ?`, [qty, req.params.id]);
         res.json({ success: true });
     } catch(err) { res.status(500).json({ error: err.message }); }
 });
 
 router.delete('/stock/:id', async (req, res) => {
     try {
-        await pool.query('DELETE FROM stock WHERE id = ?', [req.params.id]);
+        const table = req.query.user === 'shasha' ? 'shasha_stock' : 'stock';
+        await pool.query(`DELETE FROM ${table} WHERE id = ?`, [req.params.id]);
         res.json({ success: true });
     } catch(err) { res.status(500).json({ error: err.message }); }
 });
 
 // ==========================================
-// 📅 CALENDAR SHIFTS API ROUTES
+// 📅 MAIN CAFE SHIFTS API
 // ==========================================
 router.get('/shifts', async (req, res) => {
     try {
         await checkTables();
-        const [rows] = await pool.query('SELECT * FROM shifts');
+        const [rows] = await pool.query(`SELECT * FROM shifts`);
         res.json(rows);
     } catch(err) { res.status(500).json({ error: err.message }); }
 });
 
 router.post('/shifts', async (req, res) => {
     try {
-        await checkTables();
         const { shift_date, emp_name, status, remark } = req.body;
-        
-        await pool.query('DELETE FROM shifts WHERE shift_date = ? AND emp_name = ?', [shift_date, emp_name]);
-        await pool.query('INSERT INTO shifts (shift_date, emp_name, status, remark) VALUES (?, ?, ?, ?)', [shift_date, emp_name, status, remark]);
-        
+        await pool.query(`DELETE FROM shifts WHERE shift_date = ? AND emp_name = ?`, [shift_date, emp_name]);
+        await pool.query(`INSERT INTO shifts (shift_date, emp_name, status, remark) VALUES (?, ?, ?, ?)`, [shift_date, emp_name, status, remark]);
         res.json({ success: true });
     } catch(err) { res.status(500).json({ error: err.message }); }
 });
 
 router.delete('/shifts/:id', async (req, res) => {
     try {
-        await pool.query('DELETE FROM shifts WHERE id = ?', [req.params.id]);
+        await pool.query(`DELETE FROM shifts WHERE id = ?`, [req.params.id]);
         res.json({ success: true });
     } catch(err) { res.status(500).json({ error: err.message }); }
 });
 
-// 3. Bind the router to BOTH URL paths
+// ==========================================
+// 🌸 SHASHA TIMEFRAME/LOCATION API
+// ==========================================
+router.get('/timeframes', async (req, res) => {
+    try {
+        await checkTables();
+        const [rows] = await pool.query('SELECT * FROM shasha_timeframes');
+        res.json(rows);
+    } catch(err) { res.status(500).json({ error: err.message }); }
+});
+
+router.post('/timeframes', async (req, res) => {
+    try {
+        const { date_key, start_time, end_time, title, location_url } = req.body;
+        await pool.query('INSERT INTO shasha_timeframes (date_key, start_time, end_time, title, location_url) VALUES (?, ?, ?, ?, ?)', [date_key, start_time, end_time, title, location_url]);
+        res.json({ success: true });
+    } catch(err) { res.status(500).json({ error: err.message }); }
+});
+
+router.delete('/timeframes/:id', async (req, res) => {
+    try {
+        await pool.query('DELETE FROM shasha_timeframes WHERE id = ?', [req.params.id]);
+        res.json({ success: true });
+    } catch(err) { res.status(500).json({ error: err.message }); }
+});
+
 app.use('/api', router);
 app.use('/.netlify/functions/api', router);
-
-// Export for Netlify
 module.exports.handler = serverless(app);
