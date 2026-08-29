@@ -24,9 +24,23 @@ async function checkTables() {
     await pool.query(`CREATE TABLE IF NOT EXISTS shasha_stock (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) NOT NULL, qty INT NOT NULL)`);
     await pool.query(`CREATE TABLE IF NOT EXISTS shasha_timeframes (id INT AUTO_INCREMENT PRIMARY KEY, date_key VARCHAR(10) NOT NULL, start_time VARCHAR(10), end_time VARCHAR(10), title VARCHAR(255), location_url VARCHAR(500))`);
     
-    // NEW: Shasha's 6-in-1 Notes Table
+    // Shasha's 6-in-1 Notes Table
     await pool.query(`CREATE TABLE IF NOT EXISTS shasha_notes (id INT AUTO_INCREMENT PRIMARY KEY, category VARCHAR(50) NOT NULL, text1 TEXT, text2 TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`);
 }
+
+// ==========================================
+// 💓 HEARTBEAT (KEEPS AIVEN AWAKE)
+// ==========================================
+router.get('/ping', async (req, res) => {
+    try {
+        // "SELECT 1" is the cheapest, fastest query you can run. 
+        // It just touches the database to reset the sleep timer!
+        await pool.query('SELECT 1'); 
+        res.json({ status: "Awake", message: "Aiven is awake! ☕" });
+    } catch(err) { 
+        res.status(500).json({ error: err.message }); 
+    }
+});
 
 // ==========================================
 // 📦 STOCK API
@@ -145,6 +159,10 @@ router.delete('/notes/:id', async (req, res) => {
     } catch(err) { res.status(500).json({ error: err.message }); }
 });
 
+// ==========================================
+// 🚀 NETLIFY ROUTER EXPORT
+// ==========================================
 app.use('/api', router);
 app.use('/.netlify/functions/api', router);
+
 module.exports.handler = serverless(app);
