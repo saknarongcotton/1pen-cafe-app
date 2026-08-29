@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>1PEN Cafe & Co - Employee Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ffb7b2;   
+            --secondary: #ffdac1; 
+            --accent: #e2f0cb;    
+            --off-red: #ffaaa5;   
+            --text: #5c4033;      
+            --bg: #fff0f5;        
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: var(--bg);
+            background-image: radial-gradient(#ffd1dc 3px, transparent 3px);
+            background-size: 30px 30px;
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--text);
+            padding: 1.5rem;
+            text-align: center;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            box-shadow: 0 10px 20px rgba(255, 183, 178, 0.4);
+            margin-bottom: 20px;
+        }
+
+        h1 { margin: 0; font-size: 2.2rem; font-weight: 900; animation: floatTitle 3s ease-in-out infinite; line-height: 1.2; }
+        .container { max-width: 900px; margin: 0 auto; padding: 0 15px 40px 15px; }
+
+        .screen-section {
+            display: none; background: white; padding: 25px; border-radius: 25px;
+            border: 3px solid var(--secondary); box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            margin-top: 20px; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative; overflow: hidden;
+        }
+
+        #main-menu { border: none; background: transparent; box-shadow: none; padding: 0; }
+        .active-section { display: block; }
+
+        /* Error/Success Animations */
+        .shake-error { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; border-color: var(--off-red) !important; color: var(--off-red); }
+        .success-glow { border-color: var(--accent) !important; background-color: #f0fdf4 !important; }
+
+        /* Menu Grid */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; margin-top: 20px; }
+        .btn-menu {
+            background-color: white; color: var(--text); padding: 20px 10px; font-size: 1.1rem;
+            font-weight: 700; font-family: 'Nunito', sans-serif; border: 3px solid var(--primary);
+            border-radius: 25px; cursor: pointer; transition: all 0.3s;
+            box-shadow: 0 8px 15px rgba(255, 183, 178, 0.3); display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 8px; text-align: center;
+        }
+        .btn-menu:hover { background-color: var(--primary); color: white; transform: translateY(-5px) scale(1.03); border-color: white; }
+
+        /* Secret Admin Button */
+        #admin-btn-menu { display: none; background-color: #fff0f5; border-color: #d4a5a5; color: #8a5a5a; }
+        #admin-btn-menu:hover { background-color: #d4a5a5; color: white; }
+
+        .back-btn {
+            background-color: var(--secondary); color: var(--text); font-weight: bold; font-family: 'Nunito', sans-serif; 
+            border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; margin-bottom: 20px; 
+            font-size: 1rem; transition: transform 0.2s; position: relative; z-index: 10;
+        }
+        .back-btn:hover { transform: translateX(-5px); background-color: var(--primary); color: white; }
+
+        /* Form Elements */
+        select, input[type="number"], input[type="text"], input[type="password"], input[type="date"] {
+            padding: 12px; border: 2px solid var(--secondary); border-radius: 15px; font-size: 1rem; 
+            font-family: 'Nunito', sans-serif; outline: none; background: white; box-sizing: border-box; width: 100%;
+        }
+        select:focus, input:focus { border-color: var(--primary); }
+        
+        button.action-btn {
+            background-color: var(--primary); color: white; font-weight: bold; border: none; padding: 12px 20px; 
+            border-radius: 15px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: transform 0.2s; 
+            font-family: 'Nunito', sans-serif; font-size: 1rem; width: 100%; box-sizing: border-box;
+        }
+        button.action-btn:hover { transform: scale(1.03); }
+
+        /* Calendar */
+        .calendar-controls { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; position: relative; z-index: 10; }
+        .calendar-controls > * { flex: 1; min-width: 100px; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; position: relative; z-index: 10; }
+        .day-header { text-align: center; font-weight: bold; color: var(--primary); padding: 5px; font-size: 0.9rem; }
+        .calendar-cell { background: white; border: 2px dashed var(--secondary); border-radius: 12px; min-height: 80px; padding: 6px; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; gap: 4px; }
+        .calendar-cell:hover { transform: scale(1.05); border-color: var(--primary); box-shadow: 0 5px 15px rgba(255,183,178,0.3); }
+        .date-num { font-weight: 900; color: var(--text); margin-bottom: 5px; font-size: 0.9rem;}
+        .shift-tag { font-size: 0.75rem; padding: 5px; border-radius: 8px; font-weight: bold; text-align: center; margin-bottom: 2px; display: flex; flex-direction: column; gap: 2px; }
+        .shift-work { background: var(--accent); color: #3b5323; }
+        .shift-off { background: var(--off-red); color: #6b2723; }
+        .shift-remark { font-size: 0.6rem; font-weight: normal; border-top: 1px dashed rgba(0,0,0,0.2); padding-top: 2px; margin-top: 2px; word-wrap: break-word; line-height: 1.1; }
+
+        /* Running Cat */
+        .running-cat { position: absolute; bottom: 20px; font-size: 3.5rem; animation: runCat 10s linear infinite; z-index: 1; opacity: 0.4; pointer-events: none; transition: all 0.3s ease; }
+
+        /* Modals */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(92, 64, 51, 0.4); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(3px); }
+        .modal-content { background: white; padding: 25px; border-radius: 25px; border: 4px solid var(--primary); width: 85%; max-width: 320px; text-align: center; animation: popIn 0.3s; }
+        .radio-group { display: flex; flex-direction: column; gap: 8px; margin: 15px 0; text-align: left; }
+        .radio-group label { background: var(--bg); padding: 12px; border-radius: 12px; border: 2px solid transparent; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 10px; font-size: 0.95rem; }
+        .radio-group label:hover { border-color: var(--primary); }
+        .radio-group input[type="radio"] { transform: scale(1.3); accent-color: var(--primary); }
+
+        /* Lists & Stock Items */
+        ul { list-style-type: none; padding: 0; margin: 0; }
+        li { background: var(--bg); margin: 10px 0; padding: 15px; border-radius: 15px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; border: 2px dashed var(--primary); gap: 10px;}
+        
+        .stock-item-name { font-size: 1.6rem; font-weight: 900; color: var(--text); line-height: 1.2; word-break: break-word; }
+        .stock-item-qty { font-size: 1.3rem; font-weight: 700; color: #7a5c53; }
+
+        .qty-btn { background: var(--secondary); color: var(--text); border: none; border-radius: 10px; width: 45px; height: 45px; font-weight: bold; cursor: pointer; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        .qty-btn:hover { background: var(--primary); color: white; transform: scale(1.1); }
+        .delete-btn { background: #ff9aa2; color: white; border: none; border-radius: 10px; padding: 10px 15px; cursor: pointer; font-weight: bold; height: 45px; font-size: 1.2rem;}
+        .delete-btn:hover { background: #ff7480; }
+
+        /* Checklist */
+        .checklist-item { font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; width: 100%; gap: 15px;}
+        .checklist-item input[type="checkbox"] { transform: scale(1.8); width: auto; cursor: pointer; accent-color: var(--primary);}
+
+        /* Admin Block */
+        .admin-block { background: #fffafb; padding: 20px; border-radius: 15px; border: 2px dashed #d4a5a5; margin-top: 15px; margin-bottom: 20px;}
+        .flex-row { display: flex; gap: 10px; margin-bottom: 15px; align-items: center; }
+        
+        /* Animations */
+        @keyframes floatTitle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+        @keyframes popIn { 0% { opacity: 0; transform: scale(0.9) translateY(10px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-10px); } 40%, 80% { transform: translateX(10px); } }
+        @keyframes runCat { 0% { left: -20%; transform: scaleX(1); } 49% { left: 120%; transform: scaleX(1); } 50% { left: 120%; transform: scaleX(-1); } 100% { left: -20%; transform: scaleX(-1); } }
+        @keyframes magicFloat { 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; } 100% { transform: translate(-50%, -150%) scale(1.5) rotate(20deg); opacity: 0; } }
+        @keyframes confettiFall { 0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; } 100% { transform: translateY(110vh) rotate(360deg); opacity: 0; } }
+        .magic-click { position: absolute; pointer-events: none; font-size: 1.8rem; animation: magicFloat 0.8s ease-out forwards; z-index: 10000; }
+        .confetti { position: fixed; z-index: 10000; pointer-events: none; animation: confettiFall 2.5s linear forwards; }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 1.8rem; }
+            .calendar-grid { gap: 4px; }
+            .calendar-cell { padding: 4px; min-height: 70px; }
+            .shift-tag { font-size: 0.65rem; padding: 4px; }
+            .flex-row { flex-direction: column; align-items: stretch; }
+            .stock-header-row { flex-direction: column; align-items: flex-start !important; gap: 10px; }
+            .qty-btn, .delete-btn { width: 40px; height: 40px; font-size: 1.2rem; }
+            .stock-item-name { font-size: 1.4rem; }
+            .stock-item-qty { font-size: 1.1rem; }
+        }
+        @media (min-width: 601px) { .grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); } }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🐈 1PEN Cafe & Co 🐾<br><span style="font-size: 1.2rem;">(ร้านกาแฟวันเพ็ญ)</span></h1>
+        <p style="margin-top: 5px; font-weight: bold; font-size: 1.1rem;">Employee Portal</p>
+    </header>
+
+    <div class="container">
+
+        <!-- LOGIN SCREEN -->
+        <div id="login-screen" class="screen-section active-section" style="text-align: center; margin-top: 5vh; max-width: 400px; margin-left: auto; margin-right: auto;">
+            <h2 id="login-title" style="font-size: 2rem; margin-top: 0;">🔒 Portal Login</h2>
+            <p id="login-desc">Please enter your 4-digit PIN</p>
+            <div style="display: flex; justify-content: center; margin: 20px 0;">
+                <input type="password" id="passcode" inputmode="numeric" maxlength="4" placeholder="••••" oninput="checkAutoLogin()" style="font-size: 2.5rem; width: 160px; text-align: center; letter-spacing: 12px; transition: all 0.3s; padding: 10px;">
+            </div>
+            <p id="login-error" style="color: var(--off-red); font-weight: bold; display: none; margin-top: 15px;">Wrong PIN, try again! 😾</p>
+        </div>
+        
+        <!-- MAIN MENU -->
+        <div id="main-menu" class="screen-section">
+            <h2 style="text-align: center; color: var(--text); margin-top: 0;">What would you like to do? 🧶</h2>
+            <div class="grid">
+                <button class="btn-menu" onclick="showSection('calendar')"><span style="font-size: 2rem;">📅</span> Calendar & Shifts</button>
+                <button class="btn-menu" onclick="showSection('stock')"><span style="font-size: 2rem;">📦</span> Stock & Inventory</button>
+                <button class="btn-menu" onclick="showSection('tasks')"><span style="font-size: 2rem;">✅</span> Daily Checklists</button>
+                <button class="btn-menu" onclick="showSection('cat-care')"><span style="font-size: 2rem;">🐾</span> Cat Care Log</button>
+                
+                <!-- SECRET ADMIN BUTTON -->
+                <button class="btn-menu" id="admin-btn-menu" onclick="showSection('admin-panel')"><span style="font-size: 2rem;">👑</span> Admin Dashboard</button>
+            </div>
+        </div>
+
+        <!-- TOOL 1: CALENDAR -->
+        <div id="calendar" class="screen-section">
+            <div class="running-cat" id="cute-cat">🐈💨</div>
+            <button class="back-btn" onclick="showSection('main-menu')">✨ Back to Menu</button>
+            <h2 style="position: relative; z-index: 10; margin-top: 0;">📅 Cafe Schedule</h2>
+            <div class="calendar-controls">
+                <select id="monthSelect" onchange="updateCalendarSettings()"></select>
+                <input type="number" id="yearSelect" onchange="updateCalendarSettings()">
+                <select id="empFilter" onchange="renderCalendar()"><option value="ALL">🌸 All Staff</option></select>
+            </div>
+            <div class="calendar-grid" id="calendarGrid"></div>
+        </div>
+
+        <!-- TOOL: ADMIN DASHBOARD -->
+        <div id="admin-panel" class="screen-section">
+            <button class="back-btn" onclick="showSection('main-menu')">✨ Back to Menu</button>
+            <h2 style="margin-top: 0; color: #8a5a5a;">👑 Admin Dashboard</h2>
+            <p>Manage cafe settings, overrides, and delete records safely.</p>
+            
+            <div class="admin-block">
+                <h3 style="margin-top: 0;">🗑️ Remove a Shift</h3>
+                <input type="date" id="adminShiftDate" onchange="updateAdminEmpList()" style="margin-bottom: 10px;">
+                <select id="adminShiftEmp" style="margin-bottom: 15px;"><option value="">Select a date first...</option></select>
+                <button class="action-btn" onclick="removeAdminShift()" style="background: var(--off-red);">Remove Shift</button>
+            </div>
+
+            <div class="admin-block">
+                <h3 style="margin-top: 0;">📝 Manage Checklist Tasks</h3>
+                <ul id="adminChecklistList"></ul>
+            </div>
+        </div>
+
+        <!-- TOOL 2: STOCK MANAGEMENT -->
+        <div id="stock" class="screen-section">
+            <button class="back-btn" onclick="showSection('main-menu')">✨ Back to Menu</button>
+            <div class="flex-row stock-header-row" style="justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h2 style="margin:0;">📦 Stock Management</h2>
+                <select id="stockSort" onchange="renderStockUI()" style="width: auto; padding: 8px 12px; font-weight: bold; background: var(--bg);">
+                    <option value="none">Sort Options...</option>
+                    <option value="nameAsc">Sort: Name (A to Z)</option>
+                    <option value="nameDesc">Sort: Name (Z to A)</option>
+                    <option value="qtyDesc">Sort: Qty (High to Low)</option>
+                    <option value="qtyAsc">Sort: Qty (Low to High)</option>
+                </select>
+            </div>
+            <div class="flex-row">
+                <input type="text" id="itemName" placeholder="Item Name (e.g., Coffee Beans)" style="flex: 2;">
+                <input type="number" id="itemQty" placeholder="Qty" style="flex: 1;">
+                <button class="action-btn" onclick="addStockItem()" style="flex: 1;">Add</button>
+            </div>
+            <ul id="stockList"></ul>
+        </div>
+
+        <!-- TOOL 3: DAILY CHECKLISTS -->
+        <div id="tasks" class="screen-section">
+            <button class="back-btn" onclick="showSection('main-menu')">✨ Back to Menu</button>
+            <h2 style="margin-top:0;">✅ Daily Checklists</h2>
+            <div class="admin-block" style="background: var(--bg); border-color: var(--primary);">
+                <p style="margin-top: 0; font-weight: bold;">🗓️ Select Date:</p>
+                <input type="date" id="checklistDate" onchange="renderChecklist()" style="font-size: 1.2rem; font-weight: bold; color: var(--text);">
+            </div>
+            <div class="flex-row" style="margin-bottom: 20px;">
+                <input type="text" id="newChecklistTask" placeholder="New task name..." style="flex: 2;">
+                <button class="action-btn" onclick="addChecklistTask()" style="flex: 1;">Add Task ➕</button>
+            </div>
+            <ul id="dailyChecklistUI"></ul>
+        </div>
+
+        <!-- TOOL 4: CAT CARE -->
+        <div id="cat-care" class="screen-section">
+            <button class="back-btn" onclick="showSection('main-menu')">✨ Back to Menu</button>
+            <h2 style="margin-top:0;">🐾 Cat Care Log</h2>
+            <button class="action-btn" style="margin-bottom:15px;">Log Morning Feeding 🥣</button>
+            <button class="action-btn" style="background:var(--secondary); color:var(--text);">Log Litter Box 🧽</button>
+        </div>
+    </div>
+
+    <!-- CALENDAR MODAL -->
+    <div id="shiftModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 style="margin-top: 0;">Add Shift for <br><span id="displayDate" style="color: var(--primary);"></span></h3>
+            <input type="text" id="shiftEmpName" placeholder="Employee Name (e.g., Jane)" style="margin-bottom: 10px;">
+            <input type="text" id="shiftRemark" placeholder="Remark (Optional - e.g., Late)" style="margin-bottom: 10px;">
+            <div class="radio-group">
+                <label><input type="radio" name="shiftStatus" value="work" checked> มาทำงานค่า 🟢</label>
+                <label><input type="radio" name="shiftStatus" value="off"> วันนี้หนูหยุดนะคะ 🔴</label>
+            </div>
+            <div class="flex-row" style="margin-bottom: 0;">
+                <button class="action-btn" onclick="saveShift()" style="flex: 1;">Save 🐾</button>
+                <button class="action-btn" onclick="closeModal('shiftModal')" style="flex: 1; background: #ccc; color: var(--text);">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- STOCK DELETE CONFIRMATION MODAL -->
+    <div id="deleteConfirmModal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 300px;">
+            <h3 style="margin-top: 0; color: var(--off-red);">🔒 Security Check</h3>
+            <p style="font-weight: bold;">Enter PIN to delete:</p>
+            <h4 id="deleteItemNameDisplay" style="color: var(--text); margin-top: 0; font-size: 1.4rem; word-wrap: break-word;">Item</h4>
+            <input type="password" id="deletePasscode" inputmode="numeric" maxlength="4" placeholder="••••" oninput="checkDeletePin()" style="font-size: 2rem; width: 130px; text-align: center; letter-spacing: 10px; margin: 15px auto; display: block;">
+            <button class="action-btn" onclick="closeModal('deleteConfirmModal')" style="background: #ccc; color: var(--text); margin-top: 10px;">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // 🌐 API CONNECTION SETTINGS
+        // ==========================================
+        const API_URL = '/api'; // NETLIFY FUNCTION ROUTE
+
+        // ==========================================
+        // 🔒 AUTO-LOGIN MAGIC
+        // ==========================================
+        function checkAutoLogin() {
+            const inputField = document.getElementById('passcode');
+            const errorMsg = document.getElementById('login-error');
+            const title = document.getElementById('login-title');
+            const desc = document.getElementById('login-desc');
+            const adminBtn = document.getElementById('admin-btn-menu');
+
+            if (inputField.value.length === 4) {
+                if (inputField.value === '1184' || inputField.value === '3394') {
+                    const isAdmin = (inputField.value === '3394');
+                    adminBtn.style.display = isAdmin ? 'flex' : 'none';
+
+                    errorMsg.style.display = 'none';
+                    inputField.classList.add('success-glow');
+                    inputField.disabled = true;
+                    title.innerText = isAdmin ? "Welcome Boss! 👑" : "Welcome! 😻";
+                    desc.innerText = "Entering the portal...";
+                    triggerWelcomeConfetti();
+                    
+                    setTimeout(() => {
+                        showSection('main-menu');
+                        inputField.value = '';
+                        inputField.classList.remove('success-glow');
+                        inputField.disabled = false;
+                        title.innerText = "🔒 Portal Login";
+                        desc.innerText = "Please enter your 4-digit PIN";
+                        
+                        // Load Database data when entering the portal!
+                        initDatePickers();
+                        fetchStock();
+                        fetchShifts();
+                    }, 2200);
+                } else {
+                    inputField.classList.remove('shake-error');
+                    void inputField.offsetWidth; 
+                    inputField.classList.add('shake-error');
+                    errorMsg.style.display = 'block';
+                    setTimeout(() => { inputField.value = ''; }, 400);
+                }
+            }
+        }
+
+        function triggerWelcomeConfetti() {
+            const emojis = ['🐾', '✨', '💖', '🧶', '☕', '🐈', '🌸', '🐟'];
+            for(let i = 0; i < 40; i++) {
+                setTimeout(() => {
+                    const el = document.createElement('div');
+                    el.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+                    el.className = 'confetti';
+                    el.style.left = (Math.random() * 100) + 'vw';
+                    el.style.fontSize = (Math.random() * 2 + 1) + 'rem';
+                    el.style.animationDuration = (Math.random() * 1.5 + 1.5) + 's';
+                    document.body.appendChild(el);
+                    setTimeout(() => el.remove(), 3000);
+                }, i * 40);
+            }
+        }
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.screen-section').forEach(el => el.classList.remove('active-section'));
+            document.getElementById(sectionId).classList.add('active-section');
+            if(sectionId === 'calendar') renderCalendar();
+            if(sectionId === 'tasks') renderChecklist();
+            if(sectionId === 'admin-panel') renderAdminChecklistManager();
+        }
+
+        function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
+        
+        function initDatePickers() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('checklistDate').value = today;
+        }
+
+        // ==========================================
+        // 📦 STOCK MANAGEMENT (CONNECTED TO MYSQL)
+        // ==========================================
+        let stockData = [];
+        let itemToDeleteId = null;
+        
+        async function fetchStock() {
+            try {
+                const res = await fetch(`${API_URL}/stock`);
+                stockData = await res.json();
+                renderStockUI();
+            } catch (err) { console.error("Error fetching stock:", err); }
+        }
+
+        function renderStockUI() {
+            const list = document.getElementById('stockList'); 
+            const sortVal = document.getElementById('stockSort').value;
+            
+            if (sortVal === 'nameAsc') stockData.sort((a, b) => a.name.localeCompare(b.name));
+            else if (sortVal === 'nameDesc') stockData.sort((a, b) => b.name.localeCompare(a.name));
+            else if (sortVal === 'qtyDesc') stockData.sort((a, b) => parseInt(b.qty) - parseInt(a.qty));
+            else if (sortVal === 'qtyAsc') stockData.sort((a, b) => parseInt(a.qty) - parseInt(b.qty));
+            
+            list.innerHTML = '';
+            stockData.forEach((item) => {
+                list.innerHTML += `
+                <li>
+                    <div style="flex: 1; min-width: 120px;">
+                        <div class="stock-item-name">${item.name}</div>
+                        <div class="stock-item-qty">Qty: ${item.qty}</div>
+                    </div>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <button class="qty-btn" onclick="updateStockQty(${item.id}, ${item.qty}, -1)">-</button>
+                        <button class="qty-btn" onclick="updateStockQty(${item.id}, ${item.qty}, 1)">+</button>
+                        <button class="delete-btn" style="margin-left: 5px;" onclick="promptDeleteStock(${item.id}, '${item.name}')">✖</button>
+                    </div>
+                </li>`;
+            });
+        }
+        
+        async function updateStockQty(id, currentQty, changeAmount) {
+            let newQty = currentQty + changeAmount;
+            if (newQty < 0) newQty = 0; 
+            await fetch(`${API_URL}/stock/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ qty: newQty })
+            });
+            fetchStock();
+        }
+
+        async function addStockItem() {
+            const name = document.getElementById('itemName').value;
+            const qty = document.getElementById('itemQty').value;
+            if(name && qty) {
+                await fetch(`${API_URL}/stock`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: name, qty: qty })
+                });
+                document.getElementById('itemName').value = ''; 
+                document.getElementById('itemQty').value = ''; 
+                fetchStock();
+            }
+        }
+
+        // Secure Delete Flow 
+        function promptDeleteStock(id, name) {
+            itemToDeleteId = id;
+            document.getElementById('deleteItemNameDisplay').innerText = name;
+            document.getElementById('deletePasscode').value = ''; 
+            document.getElementById('deletePasscode').classList.remove('shake-error', 'success-glow');
+            document.getElementById('deleteConfirmModal').style.display = 'flex';
+            setTimeout(() => document.getElementById('deletePasscode').focus(), 100);
+        }
+
+        async function checkDeletePin() {
+            const inputField = document.getElementById('deletePasscode');
+            if (inputField.value.length === 4) {
+                if (inputField.value === '1184' || inputField.value === '3394') {
+                    inputField.classList.add('success-glow');
+                    await fetch(`${API_URL}/stock/${itemToDeleteId}`, { method: 'DELETE' });
+                    fetchStock(); 
+                    setTimeout(() => { closeModal('deleteConfirmModal'); }, 400);
+                } else {
+                    inputField.classList.remove('shake-error');
+                    void inputField.offsetWidth; 
+                    inputField.classList.add('shake-error');
+                    setTimeout(() => { inputField.value = ''; }, 400);
+                }
+            }
+        }
+
+        // ==========================================
+        // 📅 CALENDAR SHIFTS (CONNECTED TO MYSQL)
+        // ==========================================
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        let currentDate = new Date();
+        let calMonth = currentDate.getMonth();
+        let calYear = currentDate.getFullYear();
+        let selectedDateString = "";
+        let shiftsData = {}; 
+
+        const mSelect = document.getElementById('monthSelect');
+        monthNames.forEach((m, i) => mSelect.innerHTML += `<option value="${i}">${m}</option>`);
+        mSelect.value = calMonth;
+        document.getElementById('yearSelect').value = calYear;
+
+        async function fetchShifts() {
+            try {
+                const res = await fetch(`${API_URL}/shifts`);
+                const data = await res.json();
+                
+                shiftsData = {};
+                data.forEach(row => {
+                    if(!shiftsData[row.shift_date]) shiftsData[row.shift_date] = [];
+                    shiftsData[row.shift_date].push({
+                        id: row.id,
+                        name: row.emp_name,
+                        status: row.status,
+                        remark: row.remark
+                    });
+                });
+                updateEmployeeFilterDropdown();
+                renderCalendar();
+            } catch (err) { console.error("Error fetching shifts:", err); }
+        }
+
+        function updateCalendarSettings() { calMonth = parseInt(mSelect.value); calYear = parseInt(document.getElementById('yearSelect').value); renderCalendar(); }
+
+        function updateEmployeeFilterDropdown() {
+            const filter = document.getElementById('empFilter');
+            const currentVal = filter.value;
+            let uniqueNames = new Set();
+            Object.values(shiftsData).forEach(dayArr => dayArr.forEach(shift => uniqueNames.add(shift.name)));
+
+            filter.innerHTML = `<option value="ALL">🌸 All Staff</option>`;
+            uniqueNames.forEach(name => filter.innerHTML += `<option value="${name}">👤 ${name}</option>`);
+            if(Array.from(filter.options).some(opt => opt.value === currentVal)) filter.value = currentVal;
+        }
+
+        function renderCalendar() {
+            const grid = document.getElementById('calendarGrid'); grid.innerHTML = '';
+            const filterName = document.getElementById('empFilter').value;
+            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            days.forEach(d => grid.innerHTML += `<div class="day-header">${d}</div>`);
+
+            const firstDay = new Date(calYear, calMonth, 1).getDay();
+            const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+
+            for(let i = 0; i < firstDay; i++) grid.innerHTML += `<div></div>`;
+
+            for(let day = 1; day <= daysInMonth; day++) {
+                const dateKey = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+                const dayShifts = shiftsData[dateKey] || [];
+                let boxBgColor = 'white'; let tagsHTML = '';
+
+                dayShifts.forEach(shift => {
+                    if (filterName === 'ALL' || filterName.toLowerCase() === shift.name.toLowerCase()) {
+                        if(filterName !== 'ALL') boxBgColor = shift.status === 'work' ? 'var(--accent)' : 'var(--off-red)';
+                        const tagClass = shift.status === 'work' ? 'shift-work' : 'shift-off';
+                        let remarkHTML = shift.remark ? `<div class="shift-remark">${shift.remark}</div>` : "";
+                        tagsHTML += `<div class="shift-tag ${tagClass}"><span>${shift.name}</span>${remarkHTML}</div>`;
+                    }
+                });
+                grid.innerHTML += `<div class="calendar-cell" style="background-color: ${boxBgColor}" onclick="openModal('${dateKey}', ${day})"><div class="date-num">${day}</div>${tagsHTML}</div>`;
+            }
+        }
+
+        function openModal(dateKey, dayNum) {
+            selectedDateString = dateKey;
+            document.getElementById('displayDate').innerText = `${dayNum} ${monthNames[calMonth]} ${calYear}`;
+            document.getElementById('shiftEmpName').value = '';
+            document.getElementById('shiftRemark').value = '';
+            document.getElementById('shiftModal').style.display = 'flex';
+            setTimeout(() => document.getElementById('shiftEmpName').focus(), 100); 
+        }
+
+        async function saveShift() {
+            const empName = document.getElementById('shiftEmpName').value.trim();
+            const remark = document.getElementById('shiftRemark').value.trim();
+            const status = document.querySelector('input[name="shiftStatus"]:checked').value;
+            
+            if(!empName) { alert("Please enter an employee name! 🐾"); return; }
+
+            await fetch(`${API_URL}/shifts`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ shift_date: selectedDateString, emp_name: empName, status: status, remark: remark })
+            });
+
+            fetchShifts(); 
+            closeModal('shiftModal');
+        }
+
+        // Admin Shift Removal
+        function updateAdminEmpList() {
+            const dateVal = document.getElementById('adminShiftDate').value;
+            const empSelect = document.getElementById('adminShiftEmp');
+            empSelect.innerHTML = '<option value="">Select an employee...</option>';
+            if(dateVal && shiftsData[dateVal] && shiftsData[dateVal].length > 0) {
+                shiftsData[dateVal].forEach((shift, index) => {
+                    const statusText = shift.status === 'work' ? '🟢 Working' : '🔴 Off';
+                    empSelect.innerHTML += `<option value="${index}">${shift.name} (${statusText})</option>`;
+                });
+            } else if (dateVal) {
+                empSelect.innerHTML = '<option value="">No shifts found for this date.</option>';
+            }
+        }
+
+        async function removeAdminShift() {
+            const dateVal = document.getElementById('adminShiftDate').value;
+            const empIndex = document.getElementById('adminShiftEmp').value;
+            if(!dateVal || empIndex === "") { alert("⚠️ Please select a date and an employee first!"); return; }
+            
+            const shiftId = shiftsData[dateVal][empIndex].id;
+            await fetch(`${API_URL}/shifts/${shiftId}`, { method: 'DELETE' });
+            
+            fetchShifts(); 
+            alert(`✅ Shift successfully removed.`);
+        }
+
+        // ==========================================
+        // ✅ DAILY CHECKLIST SYSTEM (LOCAL STORAGE)
+        // ==========================================
+        let masterChecklist = JSON.parse(localStorage.getItem('cafeMasterChecklist')) || ["Turn on espresso machine", "Sweep cafe floor"];
+        let dailyChecklistData = JSON.parse(localStorage.getItem('cafeDailyChecklistData')) || {};
+
+        function addChecklistTask() {
+            const newTask = document.getElementById('newChecklistTask').value.trim();
+            if (newTask && !masterChecklist.includes(newTask)) {
+                masterChecklist.push(newTask);
+                localStorage.setItem('cafeMasterChecklist', JSON.stringify(masterChecklist));
+                document.getElementById('newChecklistTask').value = '';
+                renderChecklist();
+            }
+        }
+
+        function renderChecklist() {
+            const listUI = document.getElementById('dailyChecklistUI');
+            const selectedDate = document.getElementById('checklistDate').value;
+            listUI.innerHTML = '';
+            if(!selectedDate) return;
+            if(!dailyChecklistData[selectedDate]) dailyChecklistData[selectedDate] = {};
+
+            masterChecklist.forEach(task => {
+                const isChecked = dailyChecklistData[selectedDate][task] ? 'checked' : '';
+                listUI.innerHTML += `<li><label class="checklist-item"><input type="checkbox" onchange="toggleChecklistTask('${task}', this.checked)" ${isChecked}>${task}</label></li>`;
+            });
+        }
+
+        function toggleChecklistTask(taskName, isChecked) {
+            const selectedDate = document.getElementById('checklistDate').value;
+            dailyChecklistData[selectedDate][taskName] = isChecked;
+            localStorage.setItem('cafeDailyChecklistData', JSON.stringify(dailyChecklistData));
+        }
+
+        function renderAdminChecklistManager() {
+            const adminList = document.getElementById('adminChecklistList');
+            adminList.innerHTML = '';
+            masterChecklist.forEach((task, index) => {
+                adminList.innerHTML += `<li><span style="font-weight: bold; font-size: 1.1rem; flex: 1;">${task}</span><button class="delete-btn" onclick="removeAdminChecklistTask(${index})" style="height: auto; padding: 6px 12px; font-size: 1rem;">Delete</button></li>`;
+            });
+        }
+
+        function removeAdminChecklistTask(index) {
+            if(confirm(`Are you sure you want to permanently delete "${masterChecklist[index]}" from all checklists?`)) {
+                masterChecklist.splice(index, 1);
+                localStorage.setItem('cafeMasterChecklist', JSON.stringify(masterChecklist));
+                renderAdminChecklistManager();
+            }
+        }
+
+        // --- Animations & Modals Listeners ---
+        document.getElementById('shiftModal').addEventListener('click', function(e) { if(e.target === this) closeModal('shiftModal'); });
+        document.getElementById('deleteConfirmModal').addEventListener('click', function(e) { if(e.target === this) closeModal('deleteConfirmModal'); });
+
+        const cuteCats = ['🐈💨', '🐱🎈', '😻✨', '🐈☕', '😼🛹', '🧶🐈', '😸🎵', '🐈📦'];
+        setInterval(() => {
+            const catEl = document.getElementById('cute-cat');
+            let newCat = cuteCats[Math.floor(Math.random() * cuteCats.length)];
+            while(catEl.innerText === newCat) newCat = cuteCats[Math.floor(Math.random() * cuteCats.length)];
+            catEl.innerText = newCat;
+        }, 4000); 
+
+        document.addEventListener('click', function(e) {
+            if(['INPUT','BUTTON','SELECT','LABEL'].includes(e.target.tagName)) return; 
+            const effects = ['🐾', '✨', '💖', '🧶'];
+            const el = document.createElement('div');
+            el.innerText = effects[Math.floor(Math.random() * effects.length)];
+            el.className = 'magic-click';
+            el.style.left = e.pageX + 'px'; el.style.top = e.pageY + 'px';
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 800);
+        });
+    </script>
+</body>
+</html>
